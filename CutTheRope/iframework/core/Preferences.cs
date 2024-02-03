@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework;
-//using Microsoft.Xna.Framework.Storage;
-
-// MonoGame removed Microsoft.Xna.Framework.Storage
-// so we used System.IO.File instead of StorageDevice
-// it may only works on standalone platforms
+using Microsoft.Xna.Framework.Storage;
 
 namespace CutTheRope.iframework.core
 {
@@ -17,7 +13,7 @@ namespace CutTheRope.iframework.core
 
 		private static Dictionary<string, string> dataStrings_ = new Dictionary<string, string>();
 
-		//public static IAsyncResult result;
+		public static IAsyncResult result;
 
 		public static bool GameSaveRequested = false;
 
@@ -148,7 +144,7 @@ namespace CutTheRope.iframework.core
 				if (!GameSaveRequested)
 				{
 					GameSaveRequested = true;
-					//result = StorageDevice.BeginShowSelector(PlayerIndex.One, null, null);
+					result = StorageDevice.BeginShowSelector(PlayerIndex.One, null, null);
 				}
 			}
 			catch (Exception)
@@ -160,11 +156,11 @@ namespace CutTheRope.iframework.core
 		{
 			try
 			{
-				if (!GameSaveRequested/* || !result.IsCompleted*/)
+				if (!GameSaveRequested || !result.IsCompleted)
 				{
 					return;
 				}
-                /*
+                
 				StorageDevice storageDevice = StorageDevice.EndShowSelector(result);
 				if (storageDevice != null && storageDevice.IsConnected)
 				{
@@ -182,11 +178,6 @@ namespace CutTheRope.iframework.core
 					stream.Close();
 					storageContainer.Dispose();
 				}
-				*/
-                string file = "ctr_save.bin";
-                Stream stream = File.Create(file);
-                SaveToStream(stream);
-                stream.Close();
                 GameSaveRequested = false;
 			}
 			catch (Exception)
@@ -262,7 +253,6 @@ namespace CutTheRope.iframework.core
 
 		internal static void _loadPreferences()
 		{
-			/*
 			result = StorageDevice.BeginShowSelector(PlayerIndex.One, null, null);
 			result.AsyncWaitHandle.WaitOne();
 			StorageDevice storageDevice = StorageDevice.EndShowSelector(result);
@@ -281,14 +271,6 @@ namespace CutTheRope.iframework.core
 				}
 				storageContainer.Dispose();
 			}
-			*/
-			string file = "ctr_save.bin";
-			if (File.Exists(file))
-			{
-                Stream stream = File.OpenRead(file);
-                LoadFromStream(stream);
-                stream.Close();
-            }
 		}
 	}
 }

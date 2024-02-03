@@ -52,21 +52,13 @@ namespace CutTheRope.game
 
 		public int soundPlaying;
 
-		public Vector lastTouch;
-
 		public Vector handle1;
 
 		public Vector handle2;
 
-		public Vector inithanlde1;
-
-		public Vector inithanlde2;
-
 		public DynamicArray circlesArray;
 
 		public List<BaseElement> containedObjects;
-
-		public bool removeOnNextUpdate;
 
 		private Image vinilStickerL;
 

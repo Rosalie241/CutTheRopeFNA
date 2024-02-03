@@ -36,7 +36,7 @@ namespace CutTheRope.iframework.visual
 
 		public float size;
 
-		public float endSize;
+		public float endSize = 0.0f;
 
 		public float sizeVar;
 
@@ -59,8 +59,6 @@ namespace CutTheRope.iframework.visual
 		public int particleCount;
 
 		public bool blendAdditive;
-
-		public bool colorModulate;
 
 		public float emissionRate;
 

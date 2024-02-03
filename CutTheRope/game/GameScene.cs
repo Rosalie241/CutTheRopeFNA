@@ -27,17 +27,6 @@ namespace CutTheRope.game
 			public RGBAColor c;
 		}
 
-		private class SCandy : ConstraintedPoint
-		{
-			public bool good;
-
-			public float speed;
-
-			public float angle;
-
-			public float lastAngleChange;
-		}
-
 		private class TutorialText : Text
 		{
 			public int special;
@@ -255,8 +244,6 @@ namespace CutTheRope.game
 		private float lastCandyRotateDeltaL;
 
 		private float lastCandyRotateDeltaR;
-
-		private bool spiderTookCandy;
 
 		private int special;
 
@@ -1136,7 +1123,6 @@ namespace CutTheRope.game
 			noCandyL = false;
 			noCandyR = false;
 			blink.playTimeline(0);
-			spiderTookCandy = false;
 			time = 0f;
 			score = 0;
 			gravityNormal = true;
@@ -1176,7 +1162,6 @@ namespace CutTheRope.game
 			{
 				resetBungeeHighlight();
 			}
-			Global.MouseCursor.ReleaseButtons();
 			CTRRootController.logEvent("IG_SHOWN");
 		}
 
@@ -1319,7 +1304,6 @@ namespace CutTheRope.game
 
 		public override void update(float delta)
 		{
-			delta = 0.016f;
 			base.update(delta);
 			dd.update(delta);
 			pollenDrawer.update(delta);
@@ -1682,7 +1666,6 @@ namespace CutTheRope.game
 						star.playTimeline(1);
 						break;
 					}
-					bool flag5 = false;
 					if ((twoParts == 2) ? (GameObject.objectsIntersect(candy, star) && !noCandy) : ((GameObject.objectsIntersect(candyL, star) && !noCandyL) || (GameObject.objectsIntersect(candyR, star) && !noCandyR)))
 					{
 						candyBlink.playTimeline(1);
@@ -2804,7 +2787,6 @@ namespace CutTheRope.game
 				}
 			}
 			sg.hasSpider = false;
-			spiderTookCandy = true;
 			noCandy = true;
 			Image image = Image.Image_createWithResIDQuad(64, 12);
 			image.doRestoreCutTransparency();

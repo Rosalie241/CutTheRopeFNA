@@ -17,9 +17,9 @@ namespace CutTheRope.ctr_commons
 
 		public float maxX;
 
-		public float minY;
+		public float minY = 0.0f;
 
-		public float maxY;
+		public float maxY = 0.0f;
 
 		public float xPercent;
 

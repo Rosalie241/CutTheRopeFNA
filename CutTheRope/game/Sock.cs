@@ -88,10 +88,6 @@ namespace CutTheRope.game
 			base.draw();
 		}
 
-		public override void drawBB()
-		{
-		}
-
 		public override void update(float delta)
 		{
 			base.update(delta);

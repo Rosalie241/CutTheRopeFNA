@@ -6,11 +6,11 @@ namespace CutTheRope.iframework.visual
 {
 	internal class RotatableScalableMultiParticles : ScalableMultiParticles
 	{
-		public float initialAngle;
+		public float initialAngle = 0.0f;
 
-		public float rotateSpeed;
+		public float rotateSpeed = 0.0f;
 
-		public float rotateSpeedVar;
+		public float rotateSpeedVar = 0.0f;
 
 		public override void initParticle(ref Particle particle)
 		{

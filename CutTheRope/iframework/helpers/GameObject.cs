@@ -24,8 +24,6 @@ namespace CutTheRope.iframework.helpers
 
 		public bool rotatedBB;
 
-		public bool isDrawBB;
-
 		public bool topLeftCalculated;
 
 		public static GameObject GameObject_createWithResID(int r)
@@ -87,10 +85,6 @@ namespace CutTheRope.iframework.helpers
 		public override void draw()
 		{
 			base.draw();
-			if (isDrawBB)
-			{
-				drawBB();
-			}
 		}
 
 		public override void dealloc()
@@ -182,24 +176,6 @@ namespace CutTheRope.iframework.helpers
 			rbb.brY = v3.y;
 			rbb.blX = v4.x;
 			rbb.blY = v4.y;
-		}
-
-		public virtual void drawBB()
-		{
-			OpenGL.glDisable(0);
-			if (rotatedBB)
-			{
-				OpenGL.drawSegment(drawX + rbb.tlX, drawY + rbb.tlY, drawX + rbb.trX, drawY + rbb.trY, RGBAColor.redRGBA);
-				OpenGL.drawSegment(drawX + rbb.trX, drawY + rbb.trY, drawX + rbb.brX, drawY + rbb.brY, RGBAColor.redRGBA);
-				OpenGL.drawSegment(drawX + rbb.brX, drawY + rbb.brY, drawX + rbb.blX, drawY + rbb.blY, RGBAColor.redRGBA);
-				OpenGL.drawSegment(drawX + rbb.blX, drawY + rbb.blY, drawX + rbb.tlX, drawY + rbb.tlY, RGBAColor.redRGBA);
-			}
-			else
-			{
-				GLDrawer.drawRect(drawX + bb.x, drawY + bb.y, bb.w, bb.h, RGBAColor.redRGBA);
-			}
-			OpenGL.glEnable(0);
-			OpenGL.glColor4f(Color.White);
 		}
 
 		public static bool objectsIntersect(GameObject o1, GameObject o2)

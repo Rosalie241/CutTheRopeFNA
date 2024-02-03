@@ -218,8 +218,6 @@ namespace CutTheRope.game
 
 		public DelayedDispatcher ddPackSelect;
 
-		private ScrollableContainer helpContainer;
-
 		private ScrollableContainer aboutContainer;
 
 		private ScrollableContainer packContainer;
@@ -486,7 +484,6 @@ namespace CutTheRope.game
 
 		public static BaseElement createElementWithResIdquad(int resId, int quad)
 		{
-			BaseElement baseElement = null;
 			if (resId != -1 && quad != -1)
 			{
 				return Image.Image_createWithResIDQuad(resId, quad);

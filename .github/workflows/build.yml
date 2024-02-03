@@ -1,0 +1,63 @@
+name: CutTheRope
+
+on: [ push, pull_request, workflow_dispatch ]
+
+jobs:
+  windows-build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+          fetch-depth: 0
+          submodules: 'recursive'
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.x
+    - name: Prepare Environment
+      run: |
+          $env:revision = git describe --tags --always
+          echo "GIT_REVISION=$env:revision" >> $env:GITHUB_ENV
+    - name: Build CutTheRope (win-x64)
+      run: dotnet publish -r win-x64 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
+    - name: Build CutTheRope (win-x86)
+      run: dotnet publish -r win-x86 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
+    - name: Upload CutTheRope (win-x64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: CutTheRope-Windows-x64-${{ env.GIT_REVISION }}
+        path: bin/Release/net8.0/win-x64/publish/*
+    - name: Upload CutTheRope (win-x86)
+      uses: actions/upload-artifact@v4
+      with:
+        name: CutTheRope-Windows-x86-${{ env.GIT_REVISION }}
+        path: bin/Release/net8.0/win-x86/publish/*
+  
+  linux-build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+          fetch-depth: 0
+          submodules: 'recursive'
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.x
+    - name: Prepare Environment
+      run: |
+          echo "GIT_REVISION=$(git describe --tags --always)" >> $GITHUB_ENV
+    - name: Build CutTheRope (linux-x64)
+      run: dotnet publish -r linux-x64 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
+    - name: Build CutTheRope (linux-arm64)
+      run: dotnet publish -r linux-arm64 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
+    - name: Upload CutTheRope (linux-x64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: CutTheRope-Linux-x64-${{ env.GIT_REVISION }}
+        path: bin/Release/net8.0/linux-x64/publish/*
+    - name: Upload CutTheRope (linux-arm64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: CutTheRope-Linux-arm64-${{ env.GIT_REVISION }}
+        path: bin/Release/net8.0/linux-arm64/publish/*

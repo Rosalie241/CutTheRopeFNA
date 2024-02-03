@@ -125,7 +125,6 @@ namespace CutTheRope.windows
 
 		public static void glEnable(int cap)
 		{
-			int num = 4;
 			if (cap == 1)
 			{
 				s_Blend.enable();

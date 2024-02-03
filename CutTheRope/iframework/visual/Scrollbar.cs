@@ -16,8 +16,6 @@ namespace CutTheRope.iframework.visual
 
 		public Vector sc;
 
-		public ProvideScrollPosMaxScrollPosScrollCoeff delegateProvider;
-
 		public bool vertical;
 
 		public RGBAColor backColor;
@@ -27,19 +25,11 @@ namespace CutTheRope.iframework.visual
 		public override void update(float delta)
 		{
 			base.update(delta);
-			if (delegateProvider != null)
-			{
-				delegateProvider(ref sp, ref mp, ref sc);
-			}
 		}
 
 		public override void draw()
 		{
 			base.preDraw();
-			if (global::CutTheRope.iframework.helpers.MathHelper.vectEqual(sp, global::CutTheRope.iframework.helpers.MathHelper.vectUndefined) && delegateProvider != null)
-			{
-				delegateProvider(ref sp, ref mp, ref sc);
-			}
 			OpenGL.glDisable(0);
 			bool flag = false;
 			float num;

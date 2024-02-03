@@ -43,8 +43,6 @@ namespace CutTheRope.game
 
 		private bool showGreeting;
 
-		private bool hacked;
-
 		public static void logEvent(NSString s)
 		{
 			logEvent(s.ToString());
@@ -88,7 +86,6 @@ namespace CutTheRope.game
 		{
 			if (base.initWithParent(p) != null)
 			{
-				hacked = false;
 				loadedMap = null;
 				ResourceMgr resourceMgr = Application.sharedResourceMgr();
 				resourceMgr.initLoading();
@@ -276,7 +273,6 @@ namespace CutTheRope.game
 						menuController.viewToShow = ((pack < CTRPreferences.getPacksCount() - 1) ? 5 : 7);
 					}
 					activateChild(1);
-					int num = 4;
 					if (nextController == 3)
 					{
 						menuController.showNextPack();
@@ -361,8 +357,6 @@ namespace CutTheRope.game
 
 		public static void setHacked()
 		{
-			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-			cTRRootController.hacked = true;
 		}
 
 		public static void setInCrystal(bool b)

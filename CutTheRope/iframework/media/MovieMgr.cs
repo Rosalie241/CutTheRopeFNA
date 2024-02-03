@@ -81,19 +81,19 @@ namespace CutTheRope.iframework.media
 			{
 				paused = false;
 				if (player != null && player.State == MediaState.Paused)
-				{
-					player.Resume();
-				}
+                {
+ 					player.Resume();
+                }
 			}
 		}
 
 		public void start()
 		{
 			if (waitForStart && player != null && player.State == MediaState.Stopped)
-			{
-				waitForStart = false;
-				player.Play(video);
-			}
+            {
+                waitForStart = false;
+                player.Play(video);
+            }
 		}
 
 		public void update()

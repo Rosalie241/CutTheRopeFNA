@@ -49,8 +49,6 @@ namespace CutTheRope.iframework.visual
 
 		private Vector move;
 
-		private bool movingByInertion;
-
 		private float inertiaTimeoutLeft;
 
 		private bool movingToSpoint;
@@ -85,11 +83,7 @@ namespace CutTheRope.iframework.visual
 
 		private float fixedDelta;
 
-		private float deaccelerationSpeed;
-
 		private float inertiaTimeout;
-
-		private float scrollToPointDuration;
 
 		private bool canSkipScrollPoints;
 
@@ -345,7 +339,6 @@ namespace CutTheRope.iframework.visual
 				passTouches = false;
 			}
 			touchState = TOUCH_STATE.TOUCH_STATE_DOWN;
-			movingByInertion = false;
 			movingToSpoint = false;
 			targetSpoint = -1;
 			dragStart = MathHelper.vect(tx, ty);
@@ -442,7 +435,6 @@ namespace CutTheRope.iframework.visual
 			{
 				float num = inertiaTimeoutLeft / inertiaTimeout;
 				move = MathHelper.vectMult(staticMove, (float)((double)num * 50.0));
-				movingByInertion = true;
 			}
 			if (spointsNum > 0)
 			{
@@ -483,9 +475,7 @@ namespace CutTheRope.iframework.visual
 				spointsCapacity = -1;
 				targetSpoint = -1;
 				lastTargetSpoint = -1;
-				deaccelerationSpeed = 3f;
 				inertiaTimeout = 0.1f;
-				scrollToPointDuration = 0.35f;
 				canSkipScrollPoints = false;
 				shouldBounceHorizontally = false;
 				shouldBounceVertically = false;
@@ -602,7 +592,6 @@ namespace CutTheRope.iframework.visual
 		public virtual void moveToScrollPointmoveMultiplier(int sp, float m)
 		{
 			movingToSpoint = true;
-			movingByInertion = false;
 			spointMoveMultiplier = m;
 			targetSpoint = sp;
 			lastTargetSpoint = targetSpoint;
@@ -643,10 +632,6 @@ namespace CutTheRope.iframework.visual
 				return;
 			}
 			targetSpoint = num;
-			if (!canSkipScrollPoints && targetSpoint != lastTargetSpoint)
-			{
-				movingByInertion = false;
-			}
 			if (lastTargetSpoint != targetSpoint && targetSpoint != -1 && delegateScrollableContainerProtocol != null)
 			{
 				delegateScrollableContainerProtocol.scrollableContainerchangedTargetScrollPoint(this, targetSpoint);

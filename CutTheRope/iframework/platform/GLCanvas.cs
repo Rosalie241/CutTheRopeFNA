@@ -19,17 +19,9 @@ namespace CutTheRope.iframework.platform
 
 		public TouchDelegate touchDelegate;
 
-		private NSPoint startPos;
-
 		private Font fpsFont;
 
 		private Text fpsText;
-
-		private bool mouseDown;
-
-		private NSSize cursorOrigSize;
-
-		private NSSize cursorActiveOrigSize;
 
 		private NSRect _bounds = default(NSRect);
 
@@ -44,8 +36,6 @@ namespace CutTheRope.iframework.platform
 		public int yOffset;
 
 		public int xOffsetScaled;
-
-		public int yOffsetScaled;
 
 		public int backingWidth;
 
@@ -211,11 +201,6 @@ namespace CutTheRope.iframework.platform
 				return touchDelegate.menuButtonPressed();
 			}
 			return false;
-		}
-
-		public List<TouchLocation> convertTouches(List<TouchLocation> touches)
-		{
-			return touches;
 		}
 
 		public virtual bool acceptsFirstResponder()

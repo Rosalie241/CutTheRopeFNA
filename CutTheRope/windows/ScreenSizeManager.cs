@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using CutTheRope.iframework.core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,18 +28,6 @@ namespace CutTheRope.windows
 		private bool _skipChanges;
 
 		private bool _fullScreenCropWidth = true;
-
-		public static int MAX_WINDOW_WIDTH
-		{
-			get
-			{
-				if (Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef)
-				{
-					return 4096;
-				}
-				return 2048;
-			}
-		}
 
 		public int WindowWidth
 		{
@@ -94,35 +81,11 @@ namespace CutTheRope.windows
 			}
 		}
 
-		public int GameWidth
-		{
-			get
-			{
-				return _gameWidth;
-			}
-		}
-
-		public int GameHeight
-		{
-			get
-			{
-				return _gameHeight;
-			}
-		}
-
 		public Microsoft.Xna.Framework.Rectangle ScaledViewRect
 		{
 			get
 			{
 				return _scaledViewRect;
-			}
-		}
-
-		public bool SkipSizeChanges
-		{
-			get
-			{
-				return _skipChanges;
 			}
 		}
 
@@ -144,19 +107,6 @@ namespace CutTheRope.windows
 			{
 				return (double)_scaledViewRect.Width / (double)_gameWidth;
 			}
-		}
-
-		[DllImport("Shell32.dll")]
-		private static extern int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
-
-		private void RefreshDesktop()
-		{
-			SHChangeNotify(134217728, 4096, IntPtr.Zero, IntPtr.Zero);
-		}
-
-		public void SetWindowMinimumSize(Form form)
-		{
-			form.MinimumSize = new Size(800, ScaledGameHeight(800));
 		}
 
 		public int TransformWindowToViewX(int x)
@@ -190,13 +140,9 @@ namespace CutTheRope.windows
 		{
 			FullScreenRectChanged(displayMode);
 			int num = ((windowWidth > 0) ? windowWidth : (displayMode.Width - 100));
-			if (num < 800)
+			if (num < MIN_WINDOW_WIDTH)
 			{
-				num = 800;
-			}
-			if (num > MAX_WINDOW_WIDTH)
-			{
-				num = MAX_WINDOW_WIDTH;
+				num = MIN_WINDOW_WIDTH;
 			}
 			if (num > displayMode.Width)
 			{
@@ -205,11 +151,11 @@ namespace CutTheRope.windows
 			WindowRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, num, ScaledGameHeight(num)));
 			if (isFullScreen)
 			{
-				ToggleFullScreen();
+				ToggleFullScreen(true);
 			}
 			else
 			{
-				ApplyWindowSize(WindowWidth);
+				ApplyWindowSize(WindowWidth, true);
 			}
 		}
 
@@ -250,16 +196,19 @@ namespace CutTheRope.windows
 			}
 		}
 
-		public void ApplyWindowSize(int width)
+		public void ApplyWindowSize(int width, bool initialize = false)
 		{
 			GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
 			graphicsDeviceManager.PreferredBackBufferWidth = width;
 			graphicsDeviceManager.PreferredBackBufferHeight = ScaledGameHeight(width);
-			graphicsDeviceManager.ApplyChanges();
+			if (!initialize)
+			{
+				graphicsDeviceManager.ApplyChanges();
+			}
 			WindowRectChanged(new Microsoft.Xna.Framework.Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
 		}
 
-		public void ToggleFullScreen()
+		public void ToggleFullScreen(bool initialize = false)
 		{
 			_skipChanges = true;
 			GraphicsDeviceManager graphicsDeviceManager = Global.GraphicsDeviceManager;
@@ -269,18 +218,26 @@ namespace CutTheRope.windows
 			int preferredBackBufferHeight = (IsFullScreen ? _windowRect.Height : _fullScreenRect.Height);
 			graphicsDeviceManager.PreferredBackBufferWidth = preferredBackBufferWidth;
 			graphicsDeviceManager.PreferredBackBufferHeight = preferredBackBufferHeight;
-			graphicsDeviceManager.IsFullScreen = !graphicsDeviceManager.IsFullScreen;
-			graphicsDeviceManager.ApplyChanges();
+			graphicsDeviceManager.IsFullScreen = initialize ? true : !graphicsDeviceManager.IsFullScreen;
+			if (!initialize)
+			{
+				graphicsDeviceManager.ApplyChanges();
+			}
 			_skipChanges = false;
 			EnableFullScreen(!IsFullScreen);
 			Save();
+			if (!initialize)
+			{
+				global::CutTheRope.iframework.core.Application.sharedCanvas().reshape();
+				global::CutTheRope.iframework.core.Application.sharedRootController().fullscreenToggled(IsFullScreen);
+			}
+			FullScreenCropWidth = fullScreenCropWidth;
+		}
+
+		public void InitCanvas()
+		{
 			global::CutTheRope.iframework.core.Application.sharedCanvas().reshape();
 			global::CutTheRope.iframework.core.Application.sharedRootController().fullscreenToggled(IsFullScreen);
-			FullScreenCropWidth = fullScreenCropWidth;
-			if (!IsFullScreen)
-			{
-				RefreshDesktop();
-			}
 		}
 
 		public void FixWindowSize(Microsoft.Xna.Framework.Rectangle newWindowRect)
@@ -304,13 +261,9 @@ namespace CutTheRope.windows
 					{
 						num = ScaledGameWidth(newWindowRect.Height);
 					}
-					if (num < 800 || ScaledGameHeight(num) < ScaledGameHeight(800))
+					if (num < MIN_WINDOW_WIDTH || ScaledGameHeight(num) < ScaledGameHeight(MIN_WINDOW_WIDTH))
 					{
-						num = 800;
-					}
-					if (num > MAX_WINDOW_WIDTH)
-					{
-						num = MAX_WINDOW_WIDTH;
+						num = MIN_WINDOW_WIDTH;
 					}
 					if (num > ScreenWidth)
 					{

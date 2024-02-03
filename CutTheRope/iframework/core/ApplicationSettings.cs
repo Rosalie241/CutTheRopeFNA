@@ -33,7 +33,7 @@ namespace CutTheRope.iframework.core
 
 		private static int fps = 60;
 
-		private ORIENTATION orientation;
+		private ORIENTATION orientation = ORIENTATION.ORIENTATION_PORTRAIT;
 
 		private string locale;
 

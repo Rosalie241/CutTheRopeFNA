@@ -36,7 +36,7 @@ namespace CutTheRope.iframework.sfe
 
 		public Vector gravity;
 
-		public bool disableGravity;
+		public bool disableGravity = false;
 
 		public override NSObject init()
 		{

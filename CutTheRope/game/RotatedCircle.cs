@@ -67,8 +67,6 @@ namespace CutTheRope.game
 
 		private Image vinil;
 
-		private bool hasOneHandle_;
-
 		private RGBAColor CONTOUR_COLOR = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.2);
 
 		private float INNER_CIRCLE_WIDTH = FrameworkTypes.RTPD(15.0) * 3f;
@@ -279,7 +277,7 @@ namespace CutTheRope.game
 			rotatedCircle.handle1 = global::CutTheRope.iframework.helpers.MathHelper.vectRotateAround(rotatedCircle.handle1, global::CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
 			rotatedCircle.handle2 = global::CutTheRope.iframework.helpers.MathHelper.vectRotateAround(rotatedCircle.handle2, global::CutTheRope.iframework.helpers.MathHelper.DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
 			rotatedCircle.setSize(size);
-			rotatedCircle.setHasOneHandle(hasOneHandle_);
+			rotatedCircle.setHasOneHandle(false);
 			rotatedCircle.vinilControllerL.visible = false;
 			rotatedCircle.vinilControllerR.visible = false;
 			return rotatedCircle;

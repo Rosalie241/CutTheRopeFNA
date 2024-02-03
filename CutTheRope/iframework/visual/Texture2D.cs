@@ -20,24 +20,11 @@ namespace CutTheRope.iframework.visual
 			kTexture2DPixelFormat_PVRTC4
 		}
 
-		private struct TexParams
-		{
-			private uint minFilter;
-
-			private uint magFilter;
-
-			private uint wrapS;
-
-			private uint wrapT;
-		}
-
 		private const int UNDEFINED_TEXTURE = 65536;
 
 		public Microsoft.Xna.Framework.Graphics.Texture2D xnaTexture_;
 
 		public string _resName;
-
-		private uint _name;
 
 		public Quad2D[] quads;
 
@@ -59,8 +46,6 @@ namespace CutTheRope.iframework.visual
 
 		private Vector _size;
 
-		private bool _hasPremultipliedAlpha;
-
 		public Vector[] quadOffsets;
 
 		public Rectangle[] quadRects;
@@ -78,16 +63,6 @@ namespace CutTheRope.iframework.visual
 		public Vector preCutSize;
 
 		private bool _isWvga;
-
-		private TexParams _localTexParams;
-
-		private static TexParams _defaultTexParams;
-
-		private static TexParams _texParams;
-
-		private static TexParams _texParamsCopy;
-
-		private bool PixelCorrectionDone;
 
 		private static Texture2D root;
 
@@ -285,8 +260,6 @@ namespace CutTheRope.iframework.visual
 				return null;
 			}
 			_resName = path;
-			_name = 65536u;
-			_localTexParams = _texParams;
 			reg();
 			xnaTexture_ = Images.get(path);
 			if (xnaTexture_ == null)
@@ -316,7 +289,6 @@ namespace CutTheRope.iframework.visual
 			_format = _defaultAlphaPixelFormat;
 			_maxS = (float)w / (float)num;
 			_maxT = (float)h / (float)num2;
-			_hasPremultipliedAlpha = true;
 		}
 
 		private void resume()
@@ -330,8 +302,6 @@ namespace CutTheRope.iframework.visual
 
 		public void optimizeMemory()
 		{
-			int lowypoint = _lowypoint;
-			int num = -1;
 		}
 
 		public virtual void suspend()
@@ -360,9 +330,7 @@ namespace CutTheRope.iframework.visual
 			{
 				return null;
 			}
-			_name = 65536u;
 			_lowypoint = -1;
-			_localTexParams = _defaultTexParams;
 			reg();
 			int num = calcRealSize(w);
 			int num2 = calcRealSize(h);
@@ -389,7 +357,6 @@ namespace CutTheRope.iframework.visual
 			_height = (uint)num2;
 			_maxS = (float)w / (float)num;
 			_maxT = (float)h / (float)num2;
-			_hasPremultipliedAlpha = true;
 			quadsCount = 0;
 			calculateForQuickDrawing();
 			resume();
