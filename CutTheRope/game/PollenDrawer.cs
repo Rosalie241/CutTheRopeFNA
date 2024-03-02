@@ -35,7 +35,7 @@ namespace CutTheRope.game
 		{
 			if (base.init() != null)
 			{
-				Image image = Image.Image_createWithResID(99);
+				Image image = Image.Image_createWithResID(IMG_OBJ_POLLEN_HD);
 				qw = (float)image.width * 1.5f;
 				qh = (float)image.height * 1.5f;
 				totalCapacity = 200;

@@ -35,14 +35,14 @@ namespace CutTheRope.iframework.visual
 		{
 			Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(c + 2);
 			List<Action> list = new List<Action>();
-			list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", s, 0));
+			list.Add(Action.createAction(this, ACTION_SET_DRAWQUAD, s, 0));
 			timeline.addKeyFrame(KeyFrame.makeAction(list, 0f));
 			int num = s;
 			for (int i = 1; i < c; i++)
 			{
 				num++;
 				list = new List<Action>();
-				list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", num, 0));
+				list.Add(Action.createAction(this, ACTION_SET_DRAWQUAD, num, 0));
 				timeline.addKeyFrame(KeyFrame.makeAction(list, d));
 				if (i == c - 1 && l == Timeline.LoopType.TIMELINE_REPLAY)
 				{
@@ -65,7 +65,7 @@ namespace CutTheRope.iframework.visual
 		{
 			Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(c + 2);
 			List<Action> list = new List<Action>();
-			list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", s, 0));
+			list.Add(Action.createAction(this, ACTION_SET_DRAWQUAD, s, 0));
 			timeline.addKeyFrame(KeyFrame.makeAction(list, 0f));
 			int num = s;
 			int num2 = 0;
@@ -73,7 +73,7 @@ namespace CutTheRope.iframework.visual
 			{
 				num = al[num2++];
 				list = new List<Action>();
-				list.Add(Action.createAction(this, "ACTION_SET_DRAWQUAD", num, 0));
+				list.Add(Action.createAction(this, ACTION_SET_DRAWQUAD, num, 0));
 				timeline.addKeyFrame(KeyFrame.makeAction(list, d));
 				if (i == c - 1 && l == Timeline.LoopType.TIMELINE_REPLAY)
 				{
@@ -91,13 +91,13 @@ namespace CutTheRope.iframework.visual
 		{
 			Timeline timeline = getTimeline(a1);
 			List<Action> list = new List<Action>();
-			list.Add(Action.createAction(this, "ACTION_PLAY_TIMELINE", 0, a2));
+			list.Add(Action.createAction(this, ACTION_PLAY_TIMELINE, 0, a2));
 			timeline.addKeyFrame(KeyFrame.makeAction(list, d));
 		}
 
 		public virtual void setPauseAtIndexforAnimation(int i, int a)
 		{
-			setActionTargetParamSubParamAtIndexforAnimation("ACTION_PAUSE_TIMELINE", this, 0, 0, i, a);
+			setActionTargetParamSubParamAtIndexforAnimation(ACTION_PAUSE_TIMELINE, this, 0, 0, i, a);
 		}
 
 		public virtual void setActionTargetParamSubParamAtIndexforAnimation(string action, BaseElement target, int p, int sp, int i, int a)

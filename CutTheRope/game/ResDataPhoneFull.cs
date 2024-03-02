@@ -1485,8 +1485,6 @@ namespace CutTheRope.game
 
 		internal const int IMG_MENU_EXTRA_BUTTONS_EN_en = 0;
 
-		public static string ContentFolder = "";
-
 		internal static int[] PACK_STARTUP = new int[3] { 0, 1, -1 };
 
 		internal static int[] PACK_COMMON_IMAGES = new int[8] { 2, 3, 4, 5, 6, 7, 8, -1 };
@@ -1697,62 +1695,64 @@ namespace CutTheRope.game
 			switch (id)
 			{
 			default:
-				if (id >= 145)
-				{
-					return id <= 148;
-				}
 				return false;
-			case 9:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-			case 17:
-			case 18:
-			case 19:
-			case 20:
-			case 21:
-			case 22:
-			case 23:
-			case 24:
-			case 25:
-			case 26:
-			case 27:
-			case 28:
-			case 29:
-			case 30:
-			case 31:
-			case 32:
-			case 33:
-			case 34:
-			case 35:
-			case 36:
-			case 37:
-			case 38:
-			case 39:
-			case 40:
-			case 41:
-			case 42:
-			case 43:
-			case 44:
-			case 45:
-			case 46:
-			case 47:
+			case SND_TAP:
+			case SND_BUTTON:
+			case SND_BUBBLE_BREAK:
+			case SND_BUBBLE:
+			case SND_CANDY_BREAK:
+			case SND_MONSTER_CHEWING:
+			case SND_MONSTER_CLOSE:
+			case SND_MONSTER_OPEN:
+			case SND_MONSTER_SAD:
+			case SND_RING:
+			case SND_ROPE_BLEAK_1:
+			case SND_ROPE_BLEAK_2:
+			case SND_ROPE_BLEAK_3:
+			case SND_ROPE_BLEAK_4:
+			case SND_ROPE_GET:
+			case SND_STAR_1:
+			case SND_STAR_2:
+			case SND_STAR_3:
+			case SND_ELECTRIC:
+			case SND_PUMP_1:
+			case SND_PUMP_2:
+			case SND_PUMP_3:
+			case SND_PUMP_4:
+			case SND_SPIDER_ACTIVATE:
+			case SND_SPIDER_FALL:
+			case SND_SPIDER_WIN:
+			case SND_WHEEL:
+			case SND_WIN:
+			case SND_GRAVITY_OFF:
+			case SND_GRAVITY_ON:
+			case SND_CANDY_LINK:
+			case SND_BOUNCER:
+			case SND_SPIKE_ROTATE_IN:
+			case SND_SPIKE_ROTATE_OUT:
+			case SND_BUZZ:
+			case SND_TELEPORT:
+			case SND_SCRATCH_IN:
+			case SND_SCRATCH_OUT:
+			case SND_MENU_MUSIC:
+			case SND_GAME_MUSIC:
+			case SND_GAME_MUSIC2:
+			case SND_GAME_MUSIC3:
 				return true;
-			case 10:
-				return false;
 			}
 		}
 
 		public static bool isFont(int id)
 		{
-			if (id != 3 && id != 4)
+			switch (id)
 			{
-				return id == 68;
+			default:
+				return false;
+			case FNT_BIG_FONT:
+			case FNT_SMALL_FONT:
+			case FNT_FONT_NUMBERS_BIG:
+				return true;
 			}
-			return true;
 		}
 	}
 }

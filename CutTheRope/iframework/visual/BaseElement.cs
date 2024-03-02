@@ -390,44 +390,39 @@ namespace CutTheRope.iframework.visual
 
 		public virtual bool handleAction(ActionData a)
 		{
-			if (a.actionName == "ACTION_SET_VISIBLE")
+			if (a.actionName == ACTION_SET_VISIBLE)
 			{
 				visible = a.actionSubParam != 0;
 			}
-			else if (a.actionName == "ACTION_SET_UPDATEABLE")
+			else if (a.actionName == ACTION_SET_UPDATEABLE)
 			{
 				updateable = a.actionSubParam != 0;
 			}
-			else if (a.actionName == "ACTION_SET_TOUCHABLE")
+			else if (a.actionName == ACTION_SET_TOUCHABLE)
 			{
 				touchable = a.actionSubParam != 0;
 			}
-			else if (a.actionName == "ACTION_PLAY_TIMELINE")
+			else if (a.actionName == ACTION_PLAY_TIMELINE)
 			{
 				playTimeline(a.actionSubParam);
 			}
-			else if (a.actionName == "ACTION_PAUSE_TIMELINE")
+			else if (a.actionName == ACTION_PAUSE_TIMELINE)
 			{
 				pauseCurrentTimeline();
 			}
-			else if (a.actionName == "ACTION_STOP_TIMELINE")
+			else if (a.actionName == ACTION_STOP_TIMELINE)
 			{
 				stopCurrentTimeline();
 			}
 			else
 			{
-				if (!(a.actionName == "ACTION_JUMP_TO_TIMELINE_FRAME"))
+				if (!(a.actionName == ACTION_JUMP_TO_TIMELINE_FRAME))
 				{
 					return false;
 				}
 				getCurrentTimeline().jumpToTrackKeyFrame(a.actionParam, a.actionSubParam);
 			}
 			return true;
-		}
-
-		private BaseElement createFromXML(XMLNode xml)
-		{
-			return new BaseElement();
 		}
 
 		private int parseAlignmentString(NSString s)
@@ -698,13 +693,11 @@ namespace CutTheRope.iframework.visual
 
 		public void setName(string n)
 		{
-			NSObject.NSREL(name);
 			name = new NSString(n);
 		}
 
 		public void setName(NSString n)
 		{
-			NSObject.NSREL(name);
 			name = n;
 		}
 
@@ -738,7 +731,6 @@ namespace CutTheRope.iframework.visual
 			childs = null;
 			timelines.Clear();
 			timelines = null;
-			NSObject.NSREL(name);
 			base.dealloc();
 		}
 	}

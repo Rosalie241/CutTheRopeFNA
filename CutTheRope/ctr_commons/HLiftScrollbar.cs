@@ -53,32 +53,6 @@ namespace CutTheRope.ctr_commons
 			return this;
 		}
 
-		public virtual Vector getScrollPoint(int i)
-		{
-			return spoints[i];
-		}
-
-		public virtual int getTotalScrollPoints()
-		{
-			return spointsNum;
-		}
-
-		public virtual void updateActiveSpoint()
-		{
-			for (int i = 0; i < spointsNum; i++)
-			{
-				if (!(lift.x > spointsLimits[i].x))
-				{
-					activeSpoint = limitPoints[i];
-					if (delegateLiftScrollbarDelegate != null)
-					{
-						delegateLiftScrollbarDelegate.changedActiveSpointFromTo(0, activeSpoint);
-					}
-					break;
-				}
-			}
-		}
-
 		public override void update(float delta)
 		{
 			base.update(delta);
@@ -211,16 +185,6 @@ namespace CutTheRope.ctr_commons
 				Vector vector3 = spointsLimits[l];
 				Vector vector4 = spointsLimits[l + 1];
 				spointsLimits[l].x += (vector4.x - vector3.x) / 2f;
-			}
-		}
-
-		public virtual void setContainer(ScrollableContainer c)
-		{
-			container = c;
-			if (container != null)
-			{
-				calcScrollPoints();
-				updateLift();
 			}
 		}
 	}

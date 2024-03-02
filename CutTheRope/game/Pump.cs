@@ -34,13 +34,6 @@ namespace CutTheRope.game
 			return Pump_create(Application.getTexture(r));
 		}
 
-		public static Pump Pump_createWithResIDQuad(int r, int q)
-		{
-			Pump pump = Pump_create(Application.getTexture(r));
-			pump.setDrawQuad(q);
-			return pump;
-		}
-
 		public virtual void updateRotation()
 		{
 			t1.x = x - bb.w / 2f;

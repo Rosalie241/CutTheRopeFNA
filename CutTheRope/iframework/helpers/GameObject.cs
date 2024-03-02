@@ -26,21 +26,10 @@ namespace CutTheRope.iframework.helpers
 
 		public bool topLeftCalculated;
 
-		public static GameObject GameObject_createWithResID(int r)
-		{
-			return GameObject_create(Application.getTexture(r));
-		}
-
-		private static GameObject GameObject_create(Texture2D t)
-		{
-			GameObject gameObject = new GameObject();
-			gameObject.initWithTexture(t);
-			return gameObject;
-		}
-
 		public static GameObject GameObject_createWithResIDQuad(int r, int q)
 		{
-			GameObject gameObject = GameObject_create(Application.getTexture(r));
+			GameObject gameObject = new GameObject();
+			gameObject.initWithTexture(Application.getTexture(r));
 			gameObject.setDrawQuad(q);
 			return gameObject;
 		}
@@ -89,7 +78,6 @@ namespace CutTheRope.iframework.helpers
 
 		public override void dealloc()
 		{
-			NSObject.NSREL(mover);
 			base.dealloc();
 		}
 

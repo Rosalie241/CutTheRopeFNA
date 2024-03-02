@@ -4,15 +4,6 @@ namespace CutTheRope.ios
 {
 	internal class NSObject : FrameworkTypes
 	{
-		public static void NSREL(NSObject obj)
-		{
-		}
-
-		public static object NSRET(object obj)
-		{
-			return obj;
-		}
-
 		public static NSString NSS(string s)
 		{
 			return new NSString(s);
@@ -28,14 +19,6 @@ namespace CutTheRope.ios
 		}
 
 		public virtual void release()
-		{
-		}
-
-		public virtual void retain()
-		{
-		}
-
-		public static void free(object o)
 		{
 		}
 	}

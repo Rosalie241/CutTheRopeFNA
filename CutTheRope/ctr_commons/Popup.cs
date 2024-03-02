@@ -11,8 +11,8 @@ namespace CutTheRope.ctr_commons
 	{
 		private enum POPUP
 		{
-			POPUP_SHOW_ANIM,
-			POPUP_HIDE_ANIM
+			POPUP_SHOW_ANIM = 0,
+			POPUP_HIDE_ANIM = 1
 		}
 
 		private bool isShow;
@@ -55,13 +55,13 @@ namespace CutTheRope.ctr_commons
 		{
 			Application.sharedRootController().deactivateAllButtons();
 			isShow = true;
-			playTimeline(0);
+			playTimeline((int)POPUP.POPUP_SHOW_ANIM);
 		}
 
 		public virtual void hidePopup()
 		{
 			isShow = false;
-			playTimeline(1);
+			playTimeline((int)POPUP.POPUP_HIDE_ANIM);
 		}
 
 		public override bool onTouchDownXY(float tx, float ty)

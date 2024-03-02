@@ -156,10 +156,5 @@ namespace CutTheRope.iframework.visual
 			}
 			return result;
 		}
-
-		public virtual BaseElement createFromXML(XMLNode xml)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

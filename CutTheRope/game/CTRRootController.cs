@@ -29,7 +29,7 @@ namespace CutTheRope.game
 
 		public int pack;
 
-		private NSString mapName;
+		private string mapName;
 
 		private XMLNode loadedMap;
 
@@ -39,17 +39,13 @@ namespace CutTheRope.game
 
 		private bool survival;
 
-		private bool inCrystal;
-
 		private bool showGreeting;
-
-		public static void logEvent(NSString s)
-		{
-			logEvent(s.ToString());
-		}
 
 		public static void logEvent(string s)
 		{
+#if DEBUG
+			Console.WriteLine($"[EVENT] {s}");
+#endif // DEBUG
 		}
 
 		public virtual void setMap(XMLNode map)
@@ -62,19 +58,9 @@ namespace CutTheRope.game
 			return loadedMap;
 		}
 
-		public virtual NSString getMapName()
+		public virtual void setMapName(string map)
 		{
-			return mapName;
-		}
-
-		public virtual void setMapName(NSString map)
-		{
-			NSObject.NSREL(mapName);
 			mapName = map;
-		}
-
-		public virtual void setMapsList(Dictionary<string, XMLNode> l)
-		{
 		}
 
 		public virtual int getPack()
@@ -89,11 +75,10 @@ namespace CutTheRope.game
 				loadedMap = null;
 				ResourceMgr resourceMgr = Application.sharedResourceMgr();
 				resourceMgr.initLoading();
-				resourceMgr.loadPack(ResDataPhoneFull.PACK_STARTUP);
+				resourceMgr.loadPack(PACK_STARTUP);
 				resourceMgr.loadImmediately();
 				StartupController startupController = (StartupController)new StartupController().initWithParent(this);
 				addChildwithID(startupController, 0);
-				NSObject.NSREL(startupController);
 				viewTransition = -1;
 			}
 			return this;
@@ -113,16 +98,8 @@ namespace CutTheRope.game
 		{
 			ResourceMgr resourceMgr = Application.sharedResourceMgr();
 			deleteChild(1);
-			resourceMgr.freePack(ResDataPhoneFull.PACK_MENU);
+			resourceMgr.freePack(PACK_MENU);
 			GC.Collect();
-		}
-
-		public virtual void disableGameCenter()
-		{
-		}
-
-		public virtual void enableGameCenter()
-		{
 		}
 
 		public override void suspend()
@@ -132,10 +109,7 @@ namespace CutTheRope.game
 
 		public override void resume()
 		{
-			if (!inCrystal)
-			{
-				suspended = false;
-			}
+			suspended = false;
 		}
 
 		public override void onChildDeactivated(int n)
@@ -152,20 +126,8 @@ namespace CutTheRope.game
 				MenuController menuController2 = (MenuController)new MenuController().initWithParent(this);
 				addChildwithID(menuController2, 1);
 				deleteChild(0);
-				resourceMgr.freePack(ResDataPhoneFull.PACK_STARTUP);
+				resourceMgr.freePack(PACK_STARTUP);
 				menuController2.viewToShow = 0;
-				if (Preferences._getBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
-				{
-					enableGameCenter();
-				}
-				else
-				{
-					disableGameCenter();
-				}
-				if (Preferences._getBooleanForKey("IAP_BANNERS"))
-				{
-					AndroidAPI.disableBanners();
-				}
 				FrameworkTypes._LOG("activate child menu");
 				activateChild(1);
 				break;
@@ -178,42 +140,42 @@ namespace CutTheRope.game
 				switch (pack)
 				{
 				case 0:
-					array = ResDataPhoneFull.PACK_GAME_01;
+					array = PACK_GAME_01;
 					break;
 				case 1:
-					array = ResDataPhoneFull.PACK_GAME_02;
+					array = PACK_GAME_02;
 					break;
 				case 2:
-					array = ResDataPhoneFull.PACK_GAME_03;
+					array = PACK_GAME_03;
 					break;
 				case 3:
-					array = ResDataPhoneFull.PACK_GAME_04;
+					array = PACK_GAME_04;
 					break;
 				case 4:
-					array = ResDataPhoneFull.PACK_GAME_05;
+					array = PACK_GAME_05;
 					break;
 				case 5:
-					array = ResDataPhoneFull.PACK_GAME_06;
+					array = PACK_GAME_06;
 					break;
 				case 6:
-					array = ResDataPhoneFull.PACK_GAME_07;
+					array = PACK_GAME_07;
 					break;
 				case 7:
-					array = ResDataPhoneFull.PACK_GAME_08;
+					array = PACK_GAME_08;
 					break;
 				case 8:
-					array = ResDataPhoneFull.PACK_GAME_09;
+					array = PACK_GAME_09;
 					break;
 				case 9:
-					array = ResDataPhoneFull.PACK_GAME_10;
+					array = PACK_GAME_10;
 					break;
 				case 10:
-					array = ResDataPhoneFull.PACK_GAME_11;
+					array = PACK_GAME_11;
 					break;
 				}
 				resourceMgr.initLoading();
-				resourceMgr.loadPack(ResDataPhoneFull.PACK_GAME);
-				resourceMgr.loadPack(ResDataPhoneFull.PACK_GAME_NORMAL);
+				resourceMgr.loadPack(PACK_GAME);
+				resourceMgr.loadPack(PACK_GAME_NORMAL);
 				resourceMgr.loadPack(array);
 				resourceMgr.startLoading();
 				LoadingController loadingController3 = (LoadingController)getChild(2);
@@ -242,24 +204,18 @@ namespace CutTheRope.game
 				{
 					MenuController menuController = (MenuController)new MenuController().initWithParent(this);
 					addChildwithID(menuController, 1);
-					resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_01);
-					resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_02);
-					if (!CTRPreferences.isLiteVersion())
-					{
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_03);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_04);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_05);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_06);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_07);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_08);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_09);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_10);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_COVER_11);
-					}
-					if (FrameworkTypes.IS_WVGA)
-					{
-						setViewTransition(4);
-					}
+					resourceMgr.freePack(PACK_GAME_COVER_01);
+					resourceMgr.freePack(PACK_GAME_COVER_02);
+					resourceMgr.freePack(PACK_GAME_COVER_03);
+					resourceMgr.freePack(PACK_GAME_COVER_04);
+					resourceMgr.freePack(PACK_GAME_COVER_05);
+					resourceMgr.freePack(PACK_GAME_COVER_06);
+					resourceMgr.freePack(PACK_GAME_COVER_07);
+					resourceMgr.freePack(PACK_GAME_COVER_08);
+					resourceMgr.freePack(PACK_GAME_COVER_09);
+					resourceMgr.freePack(PACK_GAME_COVER_10);
+					resourceMgr.freePack(PACK_GAME_COVER_11);
+					setViewTransition(4);
 					if (nextController == 1)
 					{
 						menuController.viewToShow = 0;
@@ -285,10 +241,8 @@ namespace CutTheRope.game
 			}
 			case 3:
 			{
-				SaveMgr.backup();
 				GameController gameController = (GameController)getChild(3);
 				int exitCode = gameController.exitCode;
-				GameScene gameScene = (GameScene)gameController.getView(0).getChild(0);
 				switch (exitCode)
 				{
 				case 0:
@@ -296,25 +250,22 @@ namespace CutTheRope.game
 				case 2:
 				{
 					deleteChild(3);
-					resourceMgr.freePack(ResDataPhoneFull.PACK_GAME);
-					resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_NORMAL);
-					resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_01);
-					resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_02);
-					if (!CTRPreferences.isLiteVersion())
-					{
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_03);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_04);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_05);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_06);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_07);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_08);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_09);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_10);
-						resourceMgr.freePack(ResDataPhoneFull.PACK_GAME_11);
-					}
+					resourceMgr.freePack(PACK_GAME);
+					resourceMgr.freePack(PACK_GAME_NORMAL);
+					resourceMgr.freePack(PACK_GAME_01);
+					resourceMgr.freePack(PACK_GAME_02);
+					resourceMgr.freePack(PACK_GAME_03);
+					resourceMgr.freePack(PACK_GAME_04);
+					resourceMgr.freePack(PACK_GAME_05);
+					resourceMgr.freePack(PACK_GAME_06);
+					resourceMgr.freePack(PACK_GAME_07);
+					resourceMgr.freePack(PACK_GAME_08);
+					resourceMgr.freePack(PACK_GAME_09);
+					resourceMgr.freePack(PACK_GAME_10);
+					resourceMgr.freePack(PACK_GAME_11);
 					resourceMgr.resourcesDelegate = (LoadingController)getChild(2);
 					resourceMgr.initLoading();
-					resourceMgr.loadPack(ResDataPhoneFull.PACK_MENU);
+					resourceMgr.loadPack(PACK_MENU);
 					resourceMgr.startLoading();
 					LoadingController loadingController = (LoadingController)getChild(2);
 					switch (exitCode)
@@ -344,29 +295,6 @@ namespace CutTheRope.game
 			loadedMap = null;
 			mapName = null;
 			base.dealloc();
-		}
-
-		public static void checkMapIsValid(NSObject data)
-		{
-		}
-
-		public static bool isHacked()
-		{
-			return false;
-		}
-
-		public static void setHacked()
-		{
-		}
-
-		public static void setInCrystal(bool b)
-		{
-			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-			cTRRootController.inCrystal = b;
-		}
-
-		public static void openFullVersionPage()
-		{
 		}
 
 		public virtual void setPack(int p)
@@ -418,11 +346,15 @@ namespace CutTheRope.game
 
 		public static void postAchievementName(string name, string s)
 		{
+#if DEBUG
+			Console.WriteLine($"[ACHIEVEMENT] {s}");
+#endif // DEBUG
 		}
 
-		public static void postAchievementName(NSString name)
+		public static void postAchievementName(string name)
 		{
-			Scorer.postAchievementName(name);
+			// TODO: add a achievement ID -> name function
+			// and then call postAchievementName(string, string)
 		}
 
 		internal void recreateLoadingController()

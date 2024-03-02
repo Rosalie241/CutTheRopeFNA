@@ -20,7 +20,7 @@ namespace CutTheRope.game
 			OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
 			preDraw();
 			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-			int num = 126 + cTRRootController.getPack();
+			int num = IMG_BGR_COVER_01 + cTRRootController.getPack();
 			float num2 = Application.sharedResourceMgr().getPercentLoaded();
 			Texture2D texture = Application.getTexture(num);
 			OpenGL.glColor4f(s_Color1);
@@ -34,7 +34,7 @@ namespace CutTheRope.game
 			OpenGL.glTranslatef(0f - num4, (0f - FrameworkTypes.SCREEN_HEIGHT) / 2f, 0.0);
 			GLDrawer.drawImageQuad(texture, 0, FrameworkTypes.SCREEN_WIDTH / 2f, 0.5);
 			OpenGL.glPopMatrix();
-			Texture2D texture2 = Application.getTexture(5);
+			Texture2D texture2 = Application.getTexture(IMG_MENU_LOADING);
 			if (!game)
 			{
 				OpenGL.glEnable(4);

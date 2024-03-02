@@ -168,17 +168,9 @@ namespace CutTheRope.game
 
 		public const string acDJPerfect = "com.zeptolab.ctr.djboxperfect";
 
-		public RemoteDataManager remoteDataManager = new RemoteDataManager();
-
 		private bool firstLaunch;
 
 		private bool playLevelScroll;
-
-		private static int[] PACK_UNLOCK_STARS_LITE = new int[11]
-		{
-			0, 20, 80, 170, 240, 300, 350, 400, 450, 500,
-			550
-		};
 
 		private static int[] PACK_UNLOCK_STARS = new int[11]
 		{
@@ -190,11 +182,11 @@ namespace CutTheRope.game
 		{
 			if (base.init() != null)
 			{
-				if (!getBooleanForKey("PREFS_EXIST"))
+				if (!getBooleanForKey(PREFS_IS_EXIST))
 				{
-					setBooleanforKey(true, "PREFS_EXIST", true);
-					setIntforKey(0, "PREFS_GAME_STARTS", true);
-					setIntforKey(0, "PREFS_LEVELS_WON", true);
+					setBooleanforKey(true, PREFS_IS_EXIST, true);
+					setIntforKey(0, PREFS_GAME_STARTS, true);
+					setIntforKey(0, PREFS_LEVELS_WON, true);
 					resetToDefaults();
 					resetMusicSound();
 					firstLaunch = true;
@@ -202,7 +194,7 @@ namespace CutTheRope.game
 				}
 				else
 				{
-					int intForKey = getIntForKey("PREFS_VERSION");
+					int intForKey = getIntForKey(PREFS_VERSION);
 					if (intForKey < 1)
 					{
 						getTotalScore();
@@ -213,7 +205,7 @@ namespace CutTheRope.game
 							int j = 0;
 							for (int levelsInPackCount = getLevelsInPackCount(); j < levelsInPackCount; j++)
 							{
-								int intForKey2 = getIntForKey(getPackLevelKey("SCORE_", i, j));
+								int intForKey2 = getIntForKey(getPackLevelKey(PREFS_SCORE_, i, j));
 								if (intForKey2 > 5999)
 								{
 									num = 150000;
@@ -228,77 +220,39 @@ namespace CutTheRope.game
 								break;
 							}
 						}
-						setScoreHash();
 					}
 					firstLaunch = false;
 					playLevelScroll = false;
 				}
-				setIntforKey(2, "PREFS_VERSION", true);
+				setIntforKey(2, PREFS_VERSION, true);
 			}
 			return this;
 		}
 
 		private void resetMusicSound()
 		{
-			setBooleanforKey(true, "SOUND_ON", true);
-			setBooleanforKey(true, "MUSIC_ON", true);
-		}
-
-		private static bool isShareware()
-		{
-			return false;
-		}
-
-		public static bool isSharewareUnlocked()
-		{
-			bool flag = isShareware();
-			if (flag)
-			{
-				if (flag)
-				{
-					return Preferences._getBooleanForKey("IAP_SHAREWARE");
-				}
-				return false;
-			}
-			return true;
-		}
-
-		public static bool isLiteVersion()
-		{
-			return false;
-		}
-
-		public static bool isBannersMustBeShown()
-		{
-			return false;
+			setBooleanforKey(true, PREFS_SOUND_ON, true);
+			setBooleanforKey(true, PREFS_MUSIC_ON, true);
 		}
 
 		public static int getStarsForPackLevel(int p, int l)
 		{
-			return Preferences._getIntForKey(getPackLevelKey("STARS_", p, l));
+			return Preferences._getIntForKey(getPackLevelKey(PREFS_STARS_, p, l));
 		}
 
 		public static UNLOCKED_STATE getUnlockedForPackLevel(int p, int l)
 		{
-			return (UNLOCKED_STATE)Preferences._getIntForKey(getPackLevelKey("UNLOCKED_", p, l));
+			return (UNLOCKED_STATE)Preferences._getIntForKey(getPackLevelKey(PREFS_UNLOCKED_, p, l));
 		}
 
 		public static int getPacksCount()
 		{
-			if (!isLiteVersion())
-			{
-				return 11;
-			}
-			return 2;
+			return 11;
 		}
 
 		public static int getLevelsInPackCount()
 		{
-			if (!isLiteVersion())
-			{
-				return 25;
-			}
-			return 9;
+			return 25;
 		}
 
 		public static int getTotalStars()
@@ -318,11 +272,7 @@ namespace CutTheRope.game
 
 		public static int packUnlockStars(int n)
 		{
-			if (!isLiteVersion())
-			{
-				return PACK_UNLOCK_STARS[n];
-			}
-			return PACK_UNLOCK_STARS_LITE[n];
+			return PACK_UNLOCK_STARS[n];
 		}
 
 		private static string getPackLevelKey(string prefs, int p, int l)
@@ -332,22 +282,12 @@ namespace CutTheRope.game
 
 		public static void setUnlockedForPackLevel(UNLOCKED_STATE s, int p, int l)
 		{
-			Preferences._setIntforKey((int)s, getPackLevelKey("UNLOCKED_", p, l), true);
-		}
-
-		public static int sharewareFreeLevels()
-		{
-			return 10;
-		}
-
-		public static int sharewareFreePacks()
-		{
-			return 2;
+			Preferences._setIntforKey((int)s, getPackLevelKey(PREFS_UNLOCKED_, p, l), true);
 		}
 
 		public static void setLastPack(int p)
 		{
-			Preferences._setIntforKey(p, "PREFS_LAST_PACK", true);
+			Preferences._setIntforKey(p, PREFS_LAST_PACK, true);
 		}
 
 		public static bool isPackPerfect(int p)
@@ -365,27 +305,23 @@ namespace CutTheRope.game
 
 		public static int getLastPack()
 		{
-			int val = Preferences._getIntForKey("PREFS_LAST_PACK");
+			int val = Preferences._getIntForKey(PREFS_LAST_PACK);
 			return Math.Min(Math.Max(0, val), getPacksCount() + 1);
-		}
-
-		public static void gameViewChanged(NSString NameOfView)
-		{
 		}
 
 		public static int getScoreForPackLevel(int p, int l)
 		{
-			return Preferences._getIntForKey("SCORE_" + p + "_" + l);
+			return Preferences._getIntForKey(PREFS_SCORE_ + p + "_" + l);
 		}
 
 		public static void setScoreForPackLevel(int s, int p, int l)
 		{
-			Preferences._setIntforKey(s, "SCORE_" + p + "_" + l, true);
+			Preferences._setIntforKey(s, PREFS_SCORE_ + p + "_" + l, true);
 		}
 
 		public static void setStarsForPackLevel(int s, int p, int l)
 		{
-			Preferences._setIntforKey(s, "STARS_" + p + "_" + l, true);
+			Preferences._setIntforKey(s, PREFS_STARS_ + p + "_" + l, true);
 		}
 
 		public static int getTotalStarsInPack(int p)
@@ -419,43 +355,25 @@ namespace CutTheRope.game
 				int j = 0;
 				for (int levelsInPackCount = getLevelsInPackCount(); j < levelsInPackCount; j++)
 				{
-					int v = (((i == 0 || (isShareware() && i < sharewareFreePacks())) && j == 0) ? 1 : 0);
-					setIntforKey(0, getPackLevelKey("SCORE_", i, j), false);
-					setIntforKey(0, getPackLevelKey("STARS_", i, j), false);
-					setIntforKey(v, getPackLevelKey("UNLOCKED_", i, j), false);
+					int v = (((i == 0) && j == 0) ? 1 : 0);
+					setIntforKey(0, getPackLevelKey(PREFS_SCORE_, i, j), false);
+					setIntforKey(0, getPackLevelKey(PREFS_STARS_, i, j), false);
+					setIntforKey(v, getPackLevelKey(PREFS_UNLOCKED_, i, j), false);
 				}
 			}
-			setIntforKey(0, "PREFS_ROPES_CUT", true);
-			setIntforKey(0, "PREFS_BUBBLES_POPPED", true);
-			setIntforKey(0, "PREFS_SPIDERS_BUSTED", true);
-			setIntforKey(0, "PREFS_CANDIES_LOST", true);
-			setIntforKey(0, "PREFS_CANDIES_UNITED", true);
-			setIntforKey(0, "PREFS_SOCKS_USED", true);
-			setIntforKey(0, "PREFS_SELECTED_CANDY", true);
-			setBooleanforKey(false, "PREFS_CANDY_WAS_CHANGED", true);
-			setBooleanforKey(true, "PREFS_GAME_CENTER_ENABLED", true);
-			setIntforKey(0, "PREFS_NEW_DRAWINGS_COUNTER", true);
-			setIntforKey(0, "PREFS_LAST_PACK", true);
-			setBooleanforKey(true, "PREFS_WINDOW_FULLSCREEN", true);
-			checkForUnlockIAP();
+			setIntforKey(0, PREFS_ROPES_CUT, true);
+			setIntforKey(0, PREFS_BUBBLES_POPPED, true);
+			setIntforKey(0, PREFS_SPIDERS_BUSTED, true);
+			setIntforKey(0, PREFS_CANDIES_LOST, true);
+			setIntforKey(0, PREFS_CANDIES_UNITED, true);
+			setIntforKey(0, PREFS_SOCKS_USED, true);
+			setIntforKey(0, PREFS_SELECTED_CANDY, true);
+			setBooleanforKey(false, PREFS_CANDY_WAS_CHANGED, true);
+			setBooleanforKey(true, PREFS_GAME_CENTER_ENABLED, true);
+			setIntforKey(0, PREFS_NEW_DRAWINGS_COUNTER, true);
+			setIntforKey(0, PREFS_LAST_PACK, true);
+			setBooleanforKey(true, PREFS_WINDOW_FULLSCREEN, true);
 			savePreferences();
-			setScoreHash();
-		}
-
-		private void checkForUnlockIAP()
-		{
-			if (!getBooleanForKey("IAP_UNLOCK"))
-			{
-				return;
-			}
-			int i = 0;
-			for (int packsCount = getPacksCount(); i < packsCount; i++)
-			{
-				if (getUnlockedForPackLevel(i, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
-				{
-					setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED, i, 0);
-				}
-			}
 		}
 
 		private int getTotalScore()
@@ -465,17 +383,10 @@ namespace CutTheRope.game
 			{
 				for (int j = 0; j < getLevelsInPackCount(); j++)
 				{
-					num += getIntForKey(getPackLevelKey("SCORE_", i, j));
+					num += getIntForKey(getPackLevelKey(PREFS_SCORE_, i, j));
 				}
 			}
 			return num;
-		}
-
-		public void setScoreHash()
-		{
-			NSString input = NSObject.NSS(getTotalScore().ToString());
-			NSString mD5Str = MathHelper.getMD5Str(input);
-			setStringforKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
 		}
 
 		internal static bool isFirstLaunch()
@@ -492,16 +403,11 @@ namespace CutTheRope.game
 				int j = 0;
 				for (int levelsInPackCount = getLevelsInPackCount(); j < levelsInPackCount; j++)
 				{
-					setIntforKey(1, getPackLevelKey("UNLOCKED_", i, j), false);
-					setIntforKey(stars, getPackLevelKey("STARS_", i, j), false);
+					setIntforKey(1, getPackLevelKey(PREFS_UNLOCKED_, i, j), false);
+					setIntforKey(stars, getPackLevelKey(PREFS_STARS_, i, j), false);
 				}
 			}
 			savePreferences();
-		}
-
-		internal bool isScoreHashValid()
-		{
-			return true;
 		}
 	}
 }

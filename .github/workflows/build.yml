@@ -18,46 +18,108 @@ jobs:
       run: |
           $env:revision = git describe --tags --always
           echo "GIT_REVISION=$env:revision" >> $env:GITHUB_ENV
-    - name: Build CutTheRope (win-x64)
-      run: dotnet publish -r win-x64 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
+    - name: Build CutTheRope (win-x64 AOT)
+      run: dotnet publish -r win-x64 -c Release /p:PublishAot=true
     - name: Build CutTheRope (win-x86)
       run: dotnet publish -r win-x86 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
     - name: Upload CutTheRope (win-x64)
       uses: actions/upload-artifact@v4
       with:
         name: CutTheRope-Windows-x64-${{ env.GIT_REVISION }}
-        path: bin/Release/net8.0/win-x64/publish/*
+        path: |
+          bin/Release/net8.0/win-x64/publish/*
+          !bin/Release/net8.0/win-x64/publish/content/*
+          !bin/Release/net8.0/win-x64/publish/*.config
+          !bin/Release/net8.0/win-x64/publish/*.pdb
     - name: Upload CutTheRope (win-x86)
       uses: actions/upload-artifact@v4
       with:
         name: CutTheRope-Windows-x86-${{ env.GIT_REVISION }}
-        path: bin/Release/net8.0/win-x86/publish/*
+        path: |
+          bin/Release/net8.0/win-x86/publish/*
+          !bin/Release/net8.0/win-x86/publish/content/*
   
   linux-build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
       with:
-          fetch-depth: 0
-          submodules: 'recursive'
+        fetch-depth: 0
+        submodules: 'recursive'
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.x
+    - name: Install Packages
+      run: |
+        source /etc/os-release
+
+        sudo dpkg --add-architecture arm64
+        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ ${VERSION_CODENAME} main restricted" | sudo tee -a /etc/apt/sources.list.d/arm64.list
+        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ ${VERSION_CODENAME}-updates main restricted" | sudo tee -a /etc/apt/sources.list.d/arm64.list
+        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ ${VERSION_CODENAME}-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64.list
+
+        sudo sed -i -e 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
+        sudo sed -i -e 's/deb mirror/deb [arch=amd64] mirror/g' /etc/apt/sources.list
+
+        sudo apt-get update
+        sudo apt-get install -yf clang llvm binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu zlib1g-dev:arm64
     - name: Prepare Environment
       run: |
-          echo "GIT_REVISION=$(git describe --tags --always)" >> $GITHUB_ENV
-    - name: Build CutTheRope (linux-x64)
-      run: dotnet publish -r linux-x64 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
-    - name: Build CutTheRope (linux-arm64)
-      run: dotnet publish -r linux-arm64 -c Release --self-contained /p:DebugType=None /p:DebugSymbols=false
+        echo "GIT_REVISION=$(git describe --tags --always)" >> $GITHUB_ENV
+    - name: Build CutTheRope (linux-x64 AOT)
+      run: dotnet publish -r linux-x64 -c Release /p:PublishAot=true
+    - name: Build CutTheRope (linux-arm64 AOT)
+      run: dotnet publish -r linux-arm64 -c Release /p:PublishAot=true
     - name: Upload CutTheRope (linux-x64)
       uses: actions/upload-artifact@v4
       with:
         name: CutTheRope-Linux-x64-${{ env.GIT_REVISION }}
-        path: bin/Release/net8.0/linux-x64/publish/*
+        path: |
+          bin/Release/net8.0/linux-x64/publish/*
+          !bin/Release/net8.0/linux-x64/publish/content/*
+          !bin/Release/net8.0/linux-x64/publish/*.dll.config
+          !bin/Release/net8.0/linux-x64/publish/*.dbg
+          !bin/Release/net8.0/linux-x64/publish/*.pdb
     - name: Upload CutTheRope (linux-arm64)
       uses: actions/upload-artifact@v4
       with:
         name: CutTheRope-Linux-arm64-${{ env.GIT_REVISION }}
-        path: bin/Release/net8.0/linux-arm64/publish/*
+        path: |
+          bin/Release/net8.0/linux-arm64/publish/*
+          !bin/Release/net8.0/linux-arm64/publish/content/*
+          !bin/Release/net8.0/linux-arm64/publish/*.dll.config
+          !bin/Release/net8.0/linux-arm64/publish/*.dbg
+          !bin/Release/net8.0/linux-arm64/publish/*.pdb
+  create-draft-release:
+    runs-on: ubuntu-20.04
+    needs: [ windows-build, linux-build ]
+    if: github.ref_type == 'tag'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Prepare Environment
+        run: |
+          echo "GIT_REVISION=$(git describe --tags --always)" >> $GITHUB_ENV
+      - name: Download CutTheRope artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Prepare CutTheRope
+        run: |
+          chmod +x artifacts/*Linux*/CutTheRope
+          for directory in artifacts/*
+          do
+            pushd "$directory"
+            cp -r ../../content ./content
+            7za a -mm=Deflate -mx=9 -r "../$(basename "$directory").zip" *
+            popd
+          done
+      - name: Create Draft Release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          draft: true
+          makeLatest: true
+          tag: ${{ env.GIT_REVISION }}
+          artifacts: artifacts/*.zip

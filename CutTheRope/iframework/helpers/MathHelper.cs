@@ -29,7 +29,9 @@ namespace CutTheRope.iframework.helpers
 
 		public static readonly Vector vectZero = new Vector(0f, 0f);
 
-		public static readonly Vector vectUndefined = new Vector(2.1474836E+09f, 2.1474836E+09f);
+		public const float vectUndefinedValue = 2.1474836E+09f;
+
+		public static readonly Vector vectUndefined = new Vector(vectUndefinedValue, vectUndefinedValue);
 
 		public static float RND_MINUS1_1
 		{
@@ -151,32 +153,32 @@ namespace CutTheRope.iframework.helpers
 		{
 			if (fmSins == null)
 			{
-				fmSins = new float[1024];
-				for (int i = 0; i < 1024; i++)
+				fmSins = new float[fmSinCosSize];
+				for (int i = 0; i < fmSinCosSize; i++)
 				{
-					fmSins[i] = (float)Math.Sin((double)(i * 2) * Math.PI / 1024.0);
+					fmSins[i] = (float)Math.Sin((double)(i * 2) * Math.PI / fmSinCosSize);
 				}
 			}
 			if (fmCoss == null)
 			{
-				fmCoss = new float[1024];
-				for (int j = 0; j < 1024; j++)
+				fmCoss = new float[fmSinCosSize];
+				for (int j = 0; j < fmSinCosSize; j++)
 				{
-					fmCoss[j] = (float)Math.Cos((double)(j * 2) * Math.PI / 1024.0);
+					fmCoss[j] = (float)Math.Cos((double)(j * 2) * Math.PI / fmSinCosSize);
 				}
 			}
 		}
 
 		public static float fmSin(float angle)
 		{
-			int num = (int)((double)(angle * 1024f) / Math.PI / 2.0);
+			int num = (int)((double)(angle * fmSinCosSize) / Math.PI / 2.0);
 			num &= 0x3FF;
 			return fmSins[num];
 		}
 
 		public static float fmCos(float angle)
 		{
-			int num = (int)((double)(angle * 1024f) / Math.PI / 2.0);
+			int num = (int)((double)(angle * fmSinCosSize) / Math.PI / 2.0);
 			num &= 0x3FF;
 			return fmCoss[num];
 		}
@@ -426,15 +428,19 @@ namespace CutTheRope.iframework.helpers
 			return new Vector(fmCos(a), fmSin(a));
 		}
 
-		private static float vectToAngle(Vector v)
-		{
-			return (float)Math.Atan2(v.x, v.y);
-		}
-
 		public static float vectDistance(Vector v1, Vector v2)
 		{
 			Vector v3 = vectSub(v1, v2);
 			return vectLength(v3);
+		}
+
+		public static Microsoft.Xna.Framework.Vector2 vectRotate(Microsoft.Xna.Framework.Vector2 v, double rad)
+		{
+			float num = fmCos((float)rad);
+			float num2 = fmSin((float)rad);
+			float xParam = v.X * num - v.Y * num2;
+			float yParam = v.X * num2 + v.Y * num;
+			return new Microsoft.Xna.Framework.Vector2(xParam, yParam);
 		}
 
 		public static Vector vectRotate(Vector v, double rad)
@@ -444,6 +450,17 @@ namespace CutTheRope.iframework.helpers
 			float xParam = v.x * num - v.y * num2;
 			float yParam = v.x * num2 + v.y * num;
 			return new Vector(xParam, yParam);
+		}
+
+		public static Microsoft.Xna.Framework.Vector2 vectRotateAround(Microsoft.Xna.Framework.Vector2 v, double rad, float cx, float cy)
+		{
+			Microsoft.Xna.Framework.Vector2 v2 = v;
+			v2.X -= cx;
+			v2.Y -= cy;
+			v2 = vectRotate(v2, rad);
+			v2.X += cx;
+			v2.Y += cy;
+			return v2;
 		}
 
 		public static Vector vectRotateAround(Vector v, double rad, float cx, float cy)
@@ -457,12 +474,6 @@ namespace CutTheRope.iframework.helpers
 			return v2;
 		}
 
-		private static Vector vectSidePerp(Vector v1, Vector v2)
-		{
-			Vector v3 = vectRperp(vectSub(v2, v1));
-			return vectNormalize(v3);
-		}
-
 		private static int vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
 		{
 			return ((p.x < x_min) ? 1 : 0) + ((p.x > x_max) ? 2 : 0) + ((p.y < y_min) ? 4 : 0) + ((p.y > y_max) ? 8 : 0);
@@ -470,12 +481,13 @@ namespace CutTheRope.iframework.helpers
 
 		public static bool lineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
 		{
-			VectorClass vectorClass = new VectorClass(new Vector(x1, y1));
-			VectorClass vectorClass2 = new VectorClass(new Vector(x2, y2));
+			Vector vector = new Vector(x1, y1);
+			Vector vector2 = new Vector(x2, y2);
 			float num = rx + w;
 			float num2 = ry + h;
-			int num3 = vcode(rx, ry, num, num2, vectorClass.v);
-			int num4 = vcode(rx, ry, num, num2, vectorClass2.v);
+			int num3 = vcode(rx, ry, num, num2, vector);
+			int num4 = vcode(rx, ry, num, num2, vector2);
+			bool updateVector1 = true;
 			while (num3 != 0 || num4 != 0)
 			{
 				if ((num3 & num4) != 0)
@@ -483,44 +495,54 @@ namespace CutTheRope.iframework.helpers
 					return false;
 				}
 				int num5;
-				VectorClass vectorClass3;
+				Vector vector3;
 				if (num3 != 0)
 				{
 					num5 = num3;
-					vectorClass3 = vectorClass;
+					vector3 = vector;
+					updateVector1 = true;
 				}
 				else
 				{
 					num5 = num4;
-					vectorClass3 = vectorClass2;
+					vector3 = vector2;
+					updateVector1 = false;
 				}
-				if (((uint)num5 & (true ? 1u : 0u)) != 0)
+				if (((uint)num5 & 1u) != 0)
 				{
-					vectorClass3.v.y += (y1 - y2) * (rx - vectorClass3.v.x) / (x1 - x2);
-					vectorClass3.v.x = rx;
+					vector3.y += (y1 - y2) * (rx - vector3.x) / (x1 - x2);
+					vector3.x = rx;
 				}
 				else if (((uint)num5 & 2u) != 0)
 				{
-					vectorClass3.v.y += (y1 - y2) * (num - vectorClass3.v.x) / (x1 - x2);
-					vectorClass3.v.x = num;
+					vector3.y += (y1 - y2) * (num - vector3.x) / (x1 - x2);
+					vector3.x = num;
 				}
 				if (((uint)num5 & 4u) != 0)
 				{
-					vectorClass3.v.x += (x1 - x2) * (ry - vectorClass3.v.y) / (y1 - y2);
-					vectorClass3.v.y = ry;
+					vector3.x += (x1 - x2) * (ry - vector3.y) / (y1 - y2);
+					vector3.y = ry;
 				}
 				else if (((uint)num5 & 8u) != 0)
 				{
-					vectorClass3.v.x += (x1 - x2) * (num2 - vectorClass3.v.y) / (y1 - y2);
-					vectorClass3.v.y = num2;
+					vector3.x += (x1 - x2) * (num2 - vector3.y) / (y1 - y2);
+					vector3.y = num2;
 				}
 				if (num5 == num3)
 				{
-					num3 = vcode(rx, ry, num, num2, vectorClass.v);
+					num3 = vcode(rx, ry, num, num2, vector);
 				}
 				else
 				{
-					num4 = vcode(rx, ry, num, num2, vectorClass2.v);
+					num4 = vcode(rx, ry, num, num2, vector2);
+				}
+				if (updateVector1)
+				{
+					vector = vector3;
+				}
+				else
+				{
+					vector2 = vector3;
 				}
 			}
 			return true;
@@ -550,39 +572,6 @@ namespace CutTheRope.iframework.helpers
 		public static float FLOAT_RND_RANGE(int S, int F)
 		{
 			return (float)RND_RANGE(S * 1000, F * 1000) / 1000f;
-		}
-
-		public static NSString getMD5Str(NSString input)
-		{
-			return getMD5(input.getCharacters());
-		}
-
-		public static NSString getMD5(char[] data)
-		{
-			byte[] array = new byte[data.Length * 2];
-			for (int i = 0; i < data.Length; i++)
-			{
-				array[i * 2] = (byte)((data[i] & 0xFF00) >> 8);
-				array[i * 2 + 1] = (byte)(data[i] & 0xFFu);
-			}
-			md5.md5_context ctx = new md5.md5_context();
-			md5.md5_starts(ref ctx);
-			md5.md5_update(ref ctx, array, (uint)array.Length);
-			byte[] array2 = new byte[16];
-			md5.md5_finish(ref ctx, array2);
-			char[] array3 = new char[33];
-			int num = 0;
-			for (int j = 0; j < 16; j++)
-			{
-				int num2 = array2[j];
-				int num3 = (num2 >> 4) & 0xF;
-				array3[num++] = (char)((num3 < 10) ? (48 + num3) : (97 + num3 - 10));
-				num3 = num2 & 0xF;
-				array3[num++] = (char)((num3 < 10) ? (48 + num3) : (97 + num3 - 10));
-			}
-			array3[num++] = '\0';
-			string rhs = new string(array3);
-			return new NSString(rhs);
 		}
 	}
 }

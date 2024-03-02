@@ -20,18 +20,18 @@ namespace CutTheRope.game
 			if (base.initWithParent(p) != null)
 			{
 				View view = (View)new View().initFullscreen();
-				Image image = Image.Image_createWithResID(0);
+				Image image = Image.Image_createWithResID(IMG_MENU_LOGO_logo);
 				image.parentAnchor = (image.anchor = 18);
 				image.scaleX = (image.scaleY = 1.25f);
 				view.addChild(image);
-				bar = TiledImage.TiledImage_createWithResID(1);
+				bar = TiledImage.TiledImage_createWithResID(IMG_MENU_LOGO_zeptolab_logo);
 				bar.parentAnchor = (bar.anchor = 9);
 				bar.setTile(-1);
 				bar.x = 738f;
 				bar.y = 1056f;
 				image.addChild(bar);
 				barTotalWidth = bar.width;
-				addViewwithID(view, 1);
+				addViewwithID(view, VIEW_ZEPTOLAB);
 				view.release();
 			}
 			return this;
@@ -60,12 +60,8 @@ namespace CutTheRope.game
 		public override void activate()
 		{
 			base.activate();
-			showView(1);
+			showView(VIEW_ZEPTOLAB);
 			moviePlaybackFinished(null);
-		}
-
-		public virtual void resourceLoaded(int resName)
-		{
 		}
 
 		public virtual void allResourcesLoaded()

@@ -33,7 +33,7 @@ namespace CutTheRope.iframework.visual
 			if (num >= 0f)
 			{
 				GLDrawer.drawImageQuad(texture, tiles[0], drawX, drawY + offsets[0]);
-				GLDrawer.drawImageTiledCool(texture, tiles[1], drawX + w, drawY + offsets[1], num, texture.quadRects[tiles[1]].h);
+				GLDrawer.drawImageTiled(texture, tiles[1], drawX + w, drawY + offsets[1], num, texture.quadRects[tiles[1]].h);
 				GLDrawer.drawImageQuad(texture, tiles[2], drawX + w + num, drawY + offsets[2]);
 			}
 			else

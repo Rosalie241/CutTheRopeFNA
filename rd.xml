@@ -1,0 +1,15 @@
+<Directives>
+    <Application>
+        <Assembly Name="FNA">
+            <!-- needed for SongReader and VideoReader -->
+            <Type Name="Microsoft.Xna.Framework.Content.SingleReader" Dynamic="Required All" />
+            <Type Name="Microsoft.Xna.Framework.Content.StringReader" Dynamic="Required All" />
+            <Type Name="Microsoft.Xna.Framework.Content.Int32Reader"  Dynamic="Required All" />
+            <!-- needed for CutTheRope -->
+            <Type Name="Microsoft.Xna.Framework.Content.SoundEffectReader" Dynamic="Required All" />
+            <Type Name="Microsoft.Xna.Framework.Content.Texture2DReader"   Dynamic="Required All" />
+            <Type Name="Microsoft.Xna.Framework.Content.VideoReader"       Dynamic="Required All" />
+            <Type Name="Microsoft.Xna.Framework.Content.SongReader"        Dynamic="Required All" />
+        </Assembly>
+    </Application>
+</Directives>

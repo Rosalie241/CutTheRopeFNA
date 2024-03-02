@@ -26,10 +26,10 @@ namespace CutTheRope.windows
 			_enabled = b;
 		}
 
-		public void Load(ContentManager cm)
+		public void Load(ContentManager contentManager)
 		{
-			_cursor       = Global.XnaGame.Content.Load<Texture2D>("cursor.png");
-			_cursorActive = Global.XnaGame.Content.Load<Texture2D>("cursor_active.png");
+			_cursor       = contentManager.Load<Texture2D>("cursor.png");
+			_cursorActive = contentManager.Load<Texture2D>("cursor_active.png");
 		}
 
 		public void Draw()

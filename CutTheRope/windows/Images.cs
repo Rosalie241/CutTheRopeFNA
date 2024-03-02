@@ -15,7 +15,7 @@ namespace CutTheRope.windows
 			_contentManagers.TryGetValue(imgName, out value);
 			if (value == null)
 			{
-				value = new ContentManager(Global.XnaGame.Services, "content");
+				value = new ContentManager(Global.XnaGame.Services, Global.XnaGame.Content.RootDirectory);
 				_contentManagers.Add(imgName, value);
 			}
 			return value;
@@ -24,15 +24,13 @@ namespace CutTheRope.windows
 		public static Texture2D get(string imgName)
 		{
 			ContentManager contentManager = getContentManager(imgName);
-			Texture2D result = null;
 			try
 			{
-				result = contentManager.Load<Texture2D>(imgName);
-				return result;
+				return contentManager.Load<Texture2D>(imgName);
 			}
 			catch (Exception)
 			{
-				return result;
+				return null;
 			}
 		}
 

@@ -97,7 +97,6 @@ namespace CutTheRope.iframework.visual
 			if (init() != null)
 			{
 				texture = t;
-				NSObject.NSRET(texture);
 				restoreCutTransparency = false;
 				if (texture.quadsCount > 0)
 				{
@@ -187,7 +186,7 @@ namespace CutTheRope.iframework.visual
 			{
 				return true;
 			}
-			if (a.actionName == "ACTION_SET_DRAWQUAD")
+			if (a.actionName == ACTION_SET_DRAWQUAD)
 			{
 				setDrawQuad(a.actionParam);
 				return true;
@@ -195,14 +194,8 @@ namespace CutTheRope.iframework.visual
 			return false;
 		}
 
-		public virtual BaseElement createFromXML(XMLNode xml)
-		{
-			throw new NotImplementedException();
-		}
-
 		public override void dealloc()
 		{
-			NSObject.NSREL(texture);
 			base.dealloc();
 		}
 	}

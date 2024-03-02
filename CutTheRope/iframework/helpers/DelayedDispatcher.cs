@@ -54,10 +54,5 @@ namespace CutTheRope.iframework.helpers
 		{
 			dispatchers.Clear();
 		}
-
-		public virtual void cancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

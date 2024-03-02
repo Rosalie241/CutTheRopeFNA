@@ -228,16 +228,16 @@ namespace CutTheRope.windows
 			Save();
 			if (!initialize)
 			{
-				global::CutTheRope.iframework.core.Application.sharedCanvas().reshape();
-				global::CutTheRope.iframework.core.Application.sharedRootController().fullscreenToggled(IsFullScreen);
+				Application.sharedCanvas().reshape();
+				Application.sharedRootController().fullscreenToggled(IsFullScreen);
 			}
 			FullScreenCropWidth = fullScreenCropWidth;
 		}
 
 		public void InitCanvas()
 		{
-			global::CutTheRope.iframework.core.Application.sharedCanvas().reshape();
-			global::CutTheRope.iframework.core.Application.sharedRootController().fullscreenToggled(IsFullScreen);
+			Application.sharedCanvas().reshape();
+			Application.sharedRootController().fullscreenToggled(IsFullScreen);
 		}
 
 		public void FixWindowSize(Microsoft.Xna.Framework.Rectangle newWindowRect)
@@ -276,7 +276,7 @@ namespace CutTheRope.windows
 				}
 			}
 			Save();
-			global::CutTheRope.iframework.core.Application.sharedCanvas().reshape();
+			Application.sharedCanvas().reshape();
 		}
 
 		public void ApplyViewportToDevice()

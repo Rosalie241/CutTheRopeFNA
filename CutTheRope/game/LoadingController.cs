@@ -10,7 +10,7 @@ namespace CutTheRope.game
 	{
 		private enum ViewID
 		{
-			VIEW_LOADING
+			VIEW_LOADING = 0
 		}
 
 		public int nextController;
@@ -20,10 +20,10 @@ namespace CutTheRope.game
 			if (base.initWithParent(p) != null)
 			{
 				LoadingView loadingView = (LoadingView)new LoadingView().initFullscreen();
-				addViewwithID(loadingView, 0);
-				Text text = new Text().initWithFont(Application.getFont(3));
+				addViewwithID(loadingView, (int)ViewID.VIEW_LOADING);
+				Text text = new Text().initWithFont(Application.getFont(FNT_BIG_FONT));
 				text.setAlignment(2);
-				text.setStringandWidth(Application.getString(655387), 300f);
+				text.setStringandWidth(Application.getString(STR_MENU_LOADING), 300f);
 				text.anchor = (text.parentAnchor = 18);
 				loadingView.addChild(text);
 			}
@@ -32,21 +32,15 @@ namespace CutTheRope.game
 
 		public override void activate()
 		{
-			AndroidAPI.showBanner();
 			base.activate();
-			LoadingView loadingView = (LoadingView)getView(0);
+			LoadingView loadingView = (LoadingView)getView((int)ViewID.VIEW_LOADING);
 			loadingView.game = nextController == 0;
-			showView(0);
-		}
-
-		public virtual void resourceLoaded(int res)
-		{
+			showView((int)ViewID.VIEW_LOADING);
 		}
 
 		public virtual void allResourcesLoaded()
 		{
 			GC.Collect();
-			AndroidAPI.hideBanner();
 			Application.sharedRootController().setViewTransition(4);
 			base.deactivate();
 		}

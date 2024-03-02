@@ -16,7 +16,7 @@ namespace CutTheRope.iframework.core
 			CONTROLLER_PAUSED
 		}
 
-		public const int FAKE_TOUCH_UP_TO_DEACTIVATE_BUTTONS = -10000;
+		public const float FAKE_TOUCH_UP_TO_DEACTIVATE_BUTTONS = -10000f;
 
 		public ControllerState controllerState;
 
@@ -126,7 +126,7 @@ namespace CutTheRope.iframework.core
 			Application.sharedRootController().onControllerViewHide(view);
 			if (view != null)
 			{
-				view.onTouchUpXY(-10000f, -10000f);
+				view.onTouchUpXY(FAKE_TOUCH_UP_TO_DEACTIVATE_BUTTONS, FAKE_TOUCH_UP_TO_DEACTIVATE_BUTTONS);
 				view.hide();
 			}
 			activeViewID = -1;
@@ -345,11 +345,6 @@ namespace CutTheRope.iframework.core
 		}
 
 		public virtual bool menuButtonPressed()
-		{
-			return false;
-		}
-
-		public virtual bool mouseMoved(float x, float y)
 		{
 			return false;
 		}

@@ -11,22 +11,7 @@ namespace CutTheRope.ctr_commons
 			throw new NotImplementedException();
 		}
 
-		public virtual void applicationWillTerminate(UIApplication application)
-		{
-			Application.sharedPreferences().savePreferences();
-		}
-
-		public virtual void applicationDidReceiveMemoryWarning(UIApplication application)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual void challengeStartedWithGameConfig(NSString gameConfig)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual void applicationWillResignActive(UIApplication application)
+		public virtual void applicationWillResignActive()
 		{
 			Application.sharedPreferences().savePreferences();
 			if (Application.root != null && !Application.root.isSuspended())
@@ -35,7 +20,7 @@ namespace CutTheRope.ctr_commons
 			}
 		}
 
-		public virtual void applicationDidBecomeActive(UIApplication application)
+		public virtual void applicationDidBecomeActive()
 		{
 			if (Application.root != null && Application.root.isSuspended())
 			{

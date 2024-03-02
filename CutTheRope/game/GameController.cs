@@ -59,7 +59,7 @@ namespace CutTheRope.game
 		{
 			if (!isGamePaused && Global.XnaGame.IsKeyPressed(Keys.F5))
 			{
-				onButtonPressed(1);
+				onButtonPressed(BUTTON_PAUSE_RESTART);
 			}
 			base.update(t);
 		}
@@ -79,7 +79,7 @@ namespace CutTheRope.game
 			Application.sharedRootController().setViewTransition(-1);
 			base.activate();
 			CTRSoundMgr._stopMusic();
-			CTRSoundMgr._playRandomMusic(146, 148);
+			CTRSoundMgr._playRandomMusic(SND_GAME_MUSIC, SND_GAME_MUSIC3);
 			initGameView();
 			showView(0);
 		}
@@ -94,18 +94,18 @@ namespace CutTheRope.game
 			GameScene gameScene = (GameScene)new GameScene().init();
 			gameScene.gameSceneDelegate = this;
 			gameView.addChildwithID(gameScene, 0);
-			Button button = MenuController.createButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
+			Button button = MenuController.createButtonWithImageQuad1Quad2IDDelegate(IMG_HUD_BUTTONS_EN, 0, 1, BUTTON_PAUSE, this);
 			button.x = -base.canvas.xOffsetScaled;
 			gameView.addChildwithID(button, 1);
-			Button button2 = MenuController.createButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
+			Button button2 = MenuController.createButtonWithImageQuad1Quad2IDDelegate(IMG_HUD_BUTTONS, 0, 1, BUTTON_PAUSE_RESTART, this);
 			button2.x = -base.canvas.xOffsetScaled;
 			gameView.addChildwithID(button2, 2);
-			Image image = Image.Image_createWithResIDQuad(66, 0);
+			Image image = Image.Image_createWithResIDQuad(IMG_MENU_PAUSE, 0);
 			image.anchor = (image.parentAnchor = 10);
 			image.scaleX = (image.scaleY = 1.25f);
 			image.rotationCenterY = -image.height / 2;
 			image.passTransformationsToChilds = false;
-			mapNameLabel = new Text().initWithFont(Application.getFont(4));
+			mapNameLabel = new Text().initWithFont(Application.getFont(FNT_SMALL_FONT));
 			mapNameLabel.setName("mapNameLabel");
 			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
 			CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
@@ -114,18 +114,18 @@ namespace CutTheRope.game
 			mapNameLabel.y = FrameworkTypes.RTD(-5.0);
 			image.addChild(mapNameLabel);
 			VBox vBox = new VBox().initWithOffsetAlignWidth(5.0, 2, FrameworkTypes.SCREEN_WIDTH);
-			Button c = MenuController.createButtonWithTextIDDelegate(Application.getString(655397), 0, this);
+			Button c = MenuController.createButtonWithTextIDDelegate(Application.getString(STR_MENU_CONTINUE), BUTTON_PAUSE_RESUME, this);
 			vBox.addChild(c);
-			Button c2 = MenuController.createButtonWithTextIDDelegate(Application.getString(655398), 2, this);
+			Button c2 = MenuController.createButtonWithTextIDDelegate(Application.getString(STR_MENU_SKIP_LEVEL), BUTTON_PAUSE_SKIP, this);
 			vBox.addChild(c2);
-			Button c3 = MenuController.createButtonWithTextIDDelegate(Application.getString(655399), 3, this);
+			Button c3 = MenuController.createButtonWithTextIDDelegate(Application.getString(STR_MENU_LEVEL_SELECT), BUTTON_PAUSE_LEVEL_SELECT, this);
 			vBox.addChild(c3);
-			Button c4 = MenuController.createButtonWithTextIDDelegate(Application.getString(655400), 4, this);
+			Button c4 = MenuController.createButtonWithTextIDDelegate(Application.getString(STR_MENU_MAIN_MENU), BUTTON_PAUSE_EXIT, this);
 			vBox.addChild(c4);
 			vBox.anchor = (vBox.parentAnchor = 10);
 			Vector offset = MathHelper.vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
-			ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, MathHelper.vectZero);
-			ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
+			ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, BUTTON_MUSIC_TOGGLE, MathHelper.vectZero);
+			ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, BUTTON_SOUND_TOGGLE, offset);
 			HBox hBox = new HBox().initWithOffsetAlignHeight(-10f, 16, toggleButton.height);
 			hBox.addChild(toggleButton2);
 			hBox.addChild(toggleButton);
@@ -187,22 +187,21 @@ namespace CutTheRope.game
 		{
 			if (CTRPreferences.isPackPerfect(pack))
 			{
-				NSString[] array = new NSString[11]
+				string[] array =
 				{
-					NSObject.NSS("1058364368"),
-					NSObject.NSS("1058328727"),
-					NSObject.NSS("1058324751"),
-					NSObject.NSS("1515793567"),
-					NSObject.NSS("1432760157"),
-					NSObject.NSS("1058327768"),
-					NSObject.NSS("1058407145"),
-					NSObject.NSS("1991641832"),
-					NSObject.NSS("1335599628"),
-					NSObject.NSS("99928734496"),
-					NSObject.NSS("com.zeptolab.ctr.djboxperfect")
+					CTRPreferences.acCardboardPerfect,
+					CTRPreferences.acFabricPerfect,
+					CTRPreferences.acFoilPerfect,
+					CTRPreferences.acMagicPerfect,
+					CTRPreferences.acValentinePerfect,
+					CTRPreferences.acGiftPerfect,
+					CTRPreferences.acCosmicPerfect,
+					CTRPreferences.acToyPerfect,
+					CTRPreferences.acToolPerfect,
+					CTRPreferences.acBuzzPerfect,
+					CTRPreferences.acDJPerfect
 				};
-				NSString name = array[pack];
-				CTRRootController.postAchievementName(name);
+				CTRRootController.postAchievementName(array[pack]);
 			}
 		}
 
@@ -224,19 +223,19 @@ namespace CutTheRope.game
 			}
 			if (flag)
 			{
-				NSString[] array = new NSString[11]
+				string[] array =
 				{
-					NSObject.NSS("681486798"),
-					NSObject.NSS("681462993"),
-					NSObject.NSS("681520253"),
-					NSObject.NSS("1515813296"),
-					NSObject.NSS("1432721430"),
-					NSObject.NSS("681512374"),
-					NSObject.NSS("1058310903"),
-					NSObject.NSS("1991474812"),
-					NSObject.NSS("1321820679"),
-					NSObject.NSS("23523272771"),
-					NSObject.NSS("com.zeptolab.ctr.djboxcompleted")
+					CTRPreferences.acCardboardBox,
+					CTRPreferences.acFabricBox,
+					CTRPreferences.acFoilBox,
+					CTRPreferences.acMagicBox,
+					CTRPreferences.acValentineBox,
+					CTRPreferences.acGiftBox,
+					CTRPreferences.acCosmicBox,
+					CTRPreferences.acToyBox,
+					CTRPreferences.acToolBox,
+					CTRPreferences.acBuzzBox,
+					CTRPreferences.acDJBox
 				};
 				CTRRootController.postAchievementName(array[pack]);
 			}
@@ -244,15 +243,15 @@ namespace CutTheRope.game
 			int totalStars = CTRPreferences.getTotalStars();
 			if (totalStars >= 50 && totalStars < 150)
 			{
-				CTRRootController.postAchievementName("677900534", FrameworkTypes.ACHIEVEMENT_STRING("\"Bronze Scissors\""));
+				CTRRootController.postAchievementName(CTRPreferences.acBronzeScissors, FrameworkTypes.ACHIEVEMENT_STRING("\"Bronze Scissors\""));
 			}
 			else if (totalStars >= 150 && totalStars < 300)
 			{
-				CTRRootController.postAchievementName("681508185", FrameworkTypes.ACHIEVEMENT_STRING("\"Silver Scissors\""));
+				CTRRootController.postAchievementName(CTRPreferences.acSilverScissors, FrameworkTypes.ACHIEVEMENT_STRING("\"Silver Scissors\""));
 			}
 			else if (totalStars >= 300)
 			{
-				CTRRootController.postAchievementName("681473653", FrameworkTypes.ACHIEVEMENT_STRING("\"Golden Scissors\""));
+				CTRRootController.postAchievementName(CTRPreferences.acGoldenScissors, FrameworkTypes.ACHIEVEMENT_STRING("\"Golden Scissors\""));
 			}
 			Preferences._savePreferences();
 			int num2 = 0;
@@ -260,24 +259,14 @@ namespace CutTheRope.game
 			{
 				num2 += CTRPreferences.getScoreForPackLevel(pack, i);
 			}
-			if (!CTRRootController.isHacked())
-			{
-				cTRPreferences.setScoreHash();
-				Preferences._savePreferences();
-			}
 			boxCloseHandled = true;
 		}
 
 		public virtual void levelWon()
 		{
 			boxCloseHandled = false;
-			CTRPreferences cTRPreferences = Application.sharedPreferences();
 			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-			if (!cTRPreferences.isScoreHashValid())
-			{
-				CTRRootController.setHacked();
-			}
-			CTRSoundMgr._playSound(37);
+			CTRSoundMgr._playSound(SND_WIN);
 			View view = getView(0);
 			view.getChild(4).touchable = true;
 			GameScene gameScene = (GameScene)view.getChild(0);
@@ -289,7 +278,7 @@ namespace CutTheRope.game
 			image2.setDrawQuad((gameScene.starsCollected > 1) ? 13 : 14);
 			image3.setDrawQuad((gameScene.starsCollected > 2) ? 13 : 14);
 			Text text = (Text)boxOpenClose.result.getChildWithName("passText");
-			text.setString(Application.getString(655372 + gameScene.starsCollected));
+			text.setString(Application.getString(STR_MENU_LEVEL_CLEARED1 + gameScene.starsCollected));
 			boxOpenClose.time = gameScene.time;
 			boxOpenClose.starBonus = gameScene.starBonus;
 			boxOpenClose.timeBonus = gameScene.timeBonus;
@@ -332,13 +321,13 @@ namespace CutTheRope.game
 
 		public virtual void gameWon()
 		{
-			postFlurryLevelEvent(NSObject.NSS("LEVEL_WON"));
+			postFlurryLevelEvent("LEVEL_WON");
 			levelWon();
 		}
 
 		public virtual void gameLost()
 		{
-			postFlurryLevelEvent(NSObject.NSS("LEVEL_LOST"));
+			postFlurryLevelEvent("LEVEL_LOST");
 		}
 
 		public virtual bool lastLevelInPack()
@@ -368,11 +357,11 @@ namespace CutTheRope.game
 		public virtual void onButtonPressed(int n)
 		{
 			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-			CTRSoundMgr._playSound(9);
+			CTRSoundMgr._playSound(SND_TAP);
 			View view = getView(0);
 			switch (n)
 			{
-			case 0:
+			case BUTTON_PAUSE_RESUME:
 			{
 				GameScene gameScene2 = (GameScene)view.getChild(0);
 				gameScene2.dimTime = tmpDimTime;
@@ -381,13 +370,13 @@ namespace CutTheRope.game
 				CTRRootController.logEvent("IM_CONTINUE_PRESSED");
 				break;
 			}
-			case 8:
+			case BUTTON_WIN_RESTART:
 				if (!boxCloseHandled)
 				{
 					boxClosed();
 				}
-				goto case 1;
-			case 1:
+				goto case BUTTON_PAUSE_RESTART;
+			case BUTTON_PAUSE_RESTART:
 			{
 				GameScene gameScene5 = (GameScene)view.getChild(0);
 				if (!gameScene5.isEnabled())
@@ -401,7 +390,7 @@ namespace CutTheRope.game
 				CTRRootController.logEvent(s);
 				break;
 			}
-			case 2:
+			case BUTTON_PAUSE_SKIP:
 			{
 				postFlurryLevelEvent("LEVEL_SKIPPED");
 				if (lastLevelInPack() && !cTRRootController.isPicker())
@@ -416,7 +405,7 @@ namespace CutTheRope.game
 				CTRRootController.logEvent("IM_SKIP_PRESSED");
 				break;
 			}
-			case 9:
+			case BUTTON_WIN_NEXT_LEVEL:
 				CTRSoundMgr._stopLoopedSounds();
 				if (!boxCloseHandled)
 				{
@@ -424,7 +413,7 @@ namespace CutTheRope.game
 				}
 				CTRRootController.logEvent("LC_NEXT_PRESSED");
 				goto case 7;
-			case 7:
+			case BUTTON_NEXT_LEVEL:
 			{
 				if (lastLevelInPack() && !cTRRootController.isPicker())
 				{
@@ -436,7 +425,7 @@ namespace CutTheRope.game
 				levelStart();
 				break;
 			}
-			case 5:
+			case BUTTON_WIN_EXIT:
 				exitCode = 1;
 				CTRSoundMgr._stopAll();
 				if (!boxCloseHandled)
@@ -446,19 +435,19 @@ namespace CutTheRope.game
 				CTRRootController.logEvent("LC_MENU_PRESSED");
 				deactivate();
 				break;
-			case 4:
+			case BUTTON_PAUSE_EXIT:
 				exitCode = 0;
 				CTRSoundMgr._stopAll();
 				levelQuit();
 				CTRRootController.logEvent("IM_MAIN_MENU");
 				break;
-			case 3:
+			case BUTTON_PAUSE_LEVEL_SELECT:
 				exitCode = 1;
 				CTRSoundMgr._stopAll();
 				levelQuit();
 				CTRRootController.logEvent("IM_LEVEL_SELECT_PRESSED");
 				break;
-			case 6:
+			case BUTTON_PAUSE:
 			{
 				GameScene gameScene4 = (GameScene)view.getChild(0);
 				tmpDimTime = (int)gameScene4.dimTime;
@@ -468,7 +457,7 @@ namespace CutTheRope.game
 				CTRRootController.logEvent("IM_SHOWN");
 				break;
 			}
-			case 10:
+			case BUTTON_MUSIC_TOGGLE:
 			{
 				bool flag2 = Preferences._getBooleanForKey("MUSIC_ON");
 				Preferences._setBooleanforKey(!flag2, "MUSIC_ON", true);
@@ -480,11 +469,11 @@ namespace CutTheRope.game
 				else
 				{
 					CTRRootController.logEvent("IM_MUSIC_ON_PRESSED");
-					CTRSoundMgr._playRandomMusic(146, 148);
+					CTRSoundMgr._playRandomMusic(SND_GAME_MUSIC, SND_GAME_MUSIC3);
 				}
 				break;
 			}
-			case 11:
+			case BUTTON_SOUND_TOGGLE:
 			{
 				bool flag = Preferences._getBooleanForKey("SOUND_ON");
 				Preferences._setBooleanforKey(!flag, "SOUND_ON", true);
@@ -520,11 +509,11 @@ namespace CutTheRope.game
 				CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
 				if (cTRRootController.isPicker())
 				{
-					mapNameLabel.setString(NSObject.NSS(""));
+					mapNameLabel.setString("");
 					return;
 				}
 				int scoreForPackLevel = CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
-				mapNameLabel.setString(NSObject.NSS(string.Concat(Application.getString(655380), ": ", scoreForPackLevel)));
+				mapNameLabel.setString(Application.getString(STR_MENU_BEST_SCORE) + ": " + scoreForPackLevel);
 			}
 			else
 			{
@@ -646,10 +635,9 @@ namespace CutTheRope.game
 
 		private static void postFlurryLevelEvent(string s)
 		{
-		}
-
-		private static void postFlurryLevelEvent(NSString s)
-		{
+#if DEBUG
+			System.Console.WriteLine($"[FLURRY EVENT] {s}");
+#endif // DEBUG
 		}
 
 		public override bool backButtonPressed()
@@ -657,15 +645,15 @@ namespace CutTheRope.game
 			View view = getView(0);
 			if (view.getChild(1).touchable)
 			{
-				onButtonPressed(6);
+				onButtonPressed(BUTTON_PAUSE);
 			}
 			else if (view.getChild(3).isEnabled())
 			{
-				onButtonPressed(0);
+				onButtonPressed(BUTTON_PAUSE_RESUME);
 			}
 			else if (view.getChild(4).touchable)
 			{
-				onButtonPressed(5);
+				onButtonPressed(BUTTON_WIN_EXIT);
 			}
 			return true;
 		}
@@ -675,18 +663,17 @@ namespace CutTheRope.game
 			View view = getView(0);
 			if (view.getChild(1).touchable)
 			{
-				onButtonPressed(6);
+				onButtonPressed(BUTTON_PAUSE);
 			}
 			else if (view.getChild(3).isEnabled())
 			{
-				onButtonPressed(0);
+				onButtonPressed(BUTTON_PAUSE_RESUME);
 			}
 			return true;
 		}
 
 		public virtual void onNextLevel()
 		{
-			CTRPreferences.gameViewChanged(NSObject.NSS("game"));
 			CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
 			View view = getView(0);
 			GameView gameView = (GameView)view;
@@ -713,22 +700,6 @@ namespace CutTheRope.game
 		{
 			View view = getView(0);
 			GameView gameView = (GameView)view;
-		}
-
-		public override bool mouseMoved(float x, float y)
-		{
-			View view = getView(0);
-			if (view != null)
-			{
-				GameScene gameScene = (GameScene)view.getChild(0);
-				if (gameScene == null || !gameScene.touchable)
-				{
-					return false;
-				}
-				gameScene.touchDraggedXYIndex(x, y, 0);
-				return true;
-			}
-			return false;
 		}
 
 		public override void fullscreenToggled(bool isFullscreen)

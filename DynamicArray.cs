@@ -31,7 +31,7 @@ internal class DynamicArray : NSObject, IEnumerable
 
 	public override NSObject init()
 	{
-		initWithCapacityandOverReallocValue(10, 10);
+		initWithCapacityandOverReallocValue(DEFAULT_CAPACITY, DEFAULT_CAPACITY);
 		return this;
 	}
 
@@ -99,7 +99,6 @@ internal class DynamicArray : NSObject, IEnumerable
 			highestIndex = k;
 		}
 		map[k] = obj;
-		map[k].retain();
 		mutationsCount++;
 	}
 
@@ -152,7 +151,6 @@ internal class DynamicArray : NSObject, IEnumerable
 			map[num] = map[num - 1];
 		}
 		map[k] = obj;
-		map[k].retain();
 		mutationsCount++;
 	}
 
@@ -225,7 +223,6 @@ internal class DynamicArray : NSObject, IEnumerable
 				map[i] = null;
 			}
 		}
-		NSObject.free(map);
 		map = null;
 		base.dealloc();
 	}

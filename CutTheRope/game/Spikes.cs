@@ -101,16 +101,16 @@ namespace CutTheRope.game
 				doRestoreCutTransparency();
 				int num = (t - 1) * 2;
 				int q = 1 + (t - 1) * 2;
-				Image image = Image.Image_createWithResIDQuad(97, num);
-				Image image2 = Image.Image_createWithResIDQuad(97, q);
+				Image image = Image.Image_createWithResIDQuad(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, num);
+				Image image2 = Image.Image_createWithResIDQuad(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, q);
 				image.doRestoreCutTransparency();
 				image2.doRestoreCutTransparency();
 				rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
 				rotateButton.delegateButtonDelegate = this;
 				rotateButton.anchor = (rotateButton.parentAnchor = 18);
 				addChild(rotateButton);
-				Vector quadOffset = Image.getQuadOffset(97, num);
-				Vector quadSize = Image.getQuadSize(97, num);
+				Vector quadOffset = Image.getQuadOffset(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, num);
+				Vector quadSize = Image.getQuadSize(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, num);
 				Vector v = MathHelper.vect(image.texture.preCutSize.x, image.texture.preCutSize.y);
 				Vector vector = MathHelper.vectSub(v, MathHelper.vectAdd(quadSize, quadOffset));
 				rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
@@ -166,7 +166,7 @@ namespace CutTheRope.game
 			electroOn = true;
 			playTimeline(1);
 			electroTimer = onTime;
-			sndElectric = CTRSoundMgr._playSoundLooped(28);
+			sndElectric = CTRSoundMgr._playSoundLooped(SND_ELECTRIC);
 		}
 
 		public virtual void rotateSpikes()
@@ -240,11 +240,11 @@ namespace CutTheRope.game
 				delegateRotateAllSpikesWithID(toggled);
 				if (spikesNormal)
 				{
-					CTRSoundMgr._playSound(42);
+					CTRSoundMgr._playSound(SND_SPIKE_ROTATE_IN);
 				}
 				else
 				{
-					CTRSoundMgr._playSound(43);
+					CTRSoundMgr._playSound(SND_SPIKE_ROTATE_OUT);
 				}
 			}
 		}

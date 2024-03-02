@@ -52,7 +52,7 @@ namespace CutTheRope.iframework.visual
 			}
 		}
 
-		public static void drawImageTiledCool(Texture2D image, int q, float x, float y, float width, float height)
+		public static void drawImageTiled(Texture2D image, int q, float x, float y, float width, float height)
 		{
 			float xParam = 0f;
 			float yParam = 0f;
@@ -87,62 +87,6 @@ namespace CutTheRope.iframework.visual
 					Rectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, num5, num6);
 					drawImagePart(image, r, x + num4, y + num3);
 				}
-			}
-		}
-
-		public static void drawImageTiled(Texture2D image, int q, float x, float y, float width, float height)
-		{
-			if (FrameworkTypes.IS_WVGA)
-			{
-				drawImageTiledCool(image, q, x, y, width, height);
-				return;
-			}
-			float xParam = 0f;
-			float yParam = 0f;
-			float num;
-			float num2;
-			if (q == -1)
-			{
-				num = image._realWidth;
-				num2 = image._realHeight;
-			}
-			else
-			{
-				xParam = image.quadRects[q].x;
-				yParam = image.quadRects[q].y;
-				num = image.quadRects[q].w;
-				num2 = image.quadRects[q].h;
-			}
-			if (width == num && height == num2)
-			{
-				drawImageQuad(image, q, x, y);
-				return;
-			}
-			int num3 = (int)MathHelper.ceil(width / num);
-			int num4 = (int)MathHelper.ceil(height / num2);
-			int num5 = (int)width % (int)num;
-			int num6 = (int)height % (int)num2;
-			int num7 = (int)((num5 == 0) ? num : ((float)num5));
-			int num8 = (int)((num6 == 0) ? num2 : ((float)num6));
-			int num9 = (int)x;
-			int num10 = (int)y;
-			for (int num11 = num4 - 1; num11 >= 0; num11--)
-			{
-				num9 = (int)x;
-				for (int num12 = num3 - 1; num12 >= 0; num12--)
-				{
-					if (num12 == 0 || num11 == 0)
-					{
-						Rectangle r = FrameworkTypes.MakeRectangle(xParam, yParam, (num12 == 0) ? ((float)num7) : num, (num11 == 0) ? ((float)num8) : num2);
-						drawImagePart(image, r, num9, num10);
-					}
-					else
-					{
-						drawImageQuad(image, q, num9, num10);
-					}
-					num9 += (int)num;
-				}
-				num10 += (int)num2;
 			}
 		}
 

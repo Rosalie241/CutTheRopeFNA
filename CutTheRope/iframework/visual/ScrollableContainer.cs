@@ -81,8 +81,6 @@ namespace CutTheRope.iframework.visual
 
 		public bool passTouches;
 
-		private float fixedDelta;
-
 		private float inertiaTimeout;
 
 		private bool canSkipScrollPoints;
@@ -206,7 +204,6 @@ namespace CutTheRope.iframework.visual
 		public override void update(float delta)
 		{
 			base.update(delta);
-			delta = fixedDelta;
 			targetPoint = MathHelper.vectZero;
 			if ((double)touchTimer > 0.0)
 			{
@@ -468,8 +465,6 @@ namespace CutTheRope.iframework.visual
 		{
 			if (init() != null)
 			{
-				float num = Application.sharedAppSettings().getInt(5);
-				fixedDelta = (float)(1.0 / (double)num);
 				spoints = null;
 				spointsNum = -1;
 				spointsCapacity = -1;

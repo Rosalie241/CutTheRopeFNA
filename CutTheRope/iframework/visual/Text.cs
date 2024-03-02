@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.visual
 		{
 			if (init() != null)
 			{
-				font = (FontGeneric)NSObject.NSRET(i);
+				font = i;
 				formattedStrings = new List<FormattedString>();
 				width = -1;
 				height = -1;
@@ -126,8 +126,7 @@ namespace CutTheRope.iframework.visual
 			float num5 = 0f;
 			int num6 = (int)font.fontHeight();
 			int num7 = 0;
-			NSString nSString = NSObject.NSS("..");
-			char[] characters2 = nSString.getCharacters();
+			char[] characters2 = "..".ToCharArray();
 			int num8 = (int)font.getCharOffset(characters2, 0, 2);
 			int num9 = (int)((maxHeight == -1f) ? ((float)formattedStrings.Count) : MathHelper.MIN(formattedStrings.Count, maxHeight / ((float)num6 + font.getLineOffset())));
 			bool flag = num9 != formattedStrings.Count;
@@ -192,11 +191,6 @@ namespace CutTheRope.iframework.visual
 			{
 				height = (int)MathHelper.MIN(height, maxHeight);
 			}
-		}
-
-		public virtual NSString getString()
-		{
-			return string_;
 		}
 
 		public virtual void setAlignment(int a)
@@ -297,11 +291,6 @@ namespace CutTheRope.iframework.visual
 				FormattedString item = new FormattedString().initWithStringAndWidth(str, w);
 				formattedStrings.Add(item);
 			}
-		}
-
-		private BaseElement createFromXML(XMLNode xml)
-		{
-			return null;
 		}
 
 		public override void dealloc()

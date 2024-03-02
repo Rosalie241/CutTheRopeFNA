@@ -27,7 +27,7 @@ namespace CutTheRope.iframework.visual
 			{
 				return null;
 			}
-			image = (Image)NSObject.NSRET(i);
+			image = i;
 			numberOfQuadsToDraw = -1;
 			totalQuads = n;
 			texCoordinates = new Quad2D[totalQuads];

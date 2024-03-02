@@ -5,6 +5,7 @@ using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework;
+using MathHelper = CutTheRope.iframework.helpers.MathHelper;
 
 namespace CutTheRope.game
 {
@@ -130,10 +131,10 @@ namespace CutTheRope.game
 
 		public virtual float getRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
 		{
-			Vector v3 = global::CutTheRope.iframework.helpers.MathHelper.vectSub(v1, c);
-			Vector v4 = global::CutTheRope.iframework.helpers.MathHelper.vectSub(v2, c);
-			float r = global::CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v4) - global::CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v3);
-			return global::CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(r);
+			Vector v3 = MathHelper.vectSub(v1, c);
+			Vector v4 = MathHelper.vectSub(v2, c);
+			float r = MathHelper.vectAngleNormalized(v4) - MathHelper.vectAngleNormalized(v3);
+			return MathHelper.RADIANS_TO_DEGREES(r);
 		}
 
 		public virtual void handleWheelTouch(Vector v)
@@ -147,8 +148,8 @@ namespace CutTheRope.game
 			{
 				return;
 			}
-			CTRSoundMgr._playSound(36);
-			float num = getRotateAngleForStartEndCenter(lastWheelTouch, v, global::CutTheRope.iframework.helpers.MathHelper.vect(x, y));
+			CTRSoundMgr._playSound(SND_WHEEL);
+			float num = getRotateAngleForStartEndCenter(lastWheelTouch, v, MathHelper.vect(x, y));
 			if ((double)num > 180.0)
 			{
 				num -= 360f;
@@ -160,7 +161,7 @@ namespace CutTheRope.game
 			wheelImage2.rotation += num;
 			wheelImage3.rotation += num;
 			wheelHighlight.rotation += num;
-			num = ((num > 0f) ? global::CutTheRope.iframework.helpers.MathHelper.MIN(global::CutTheRope.iframework.helpers.MathHelper.MAX(1.0, num), 4.5) : global::CutTheRope.iframework.helpers.MathHelper.MAX(global::CutTheRope.iframework.helpers.MathHelper.MIN(-1.0, num), -4.5));
+			num = ((num > 0f) ? MathHelper.MIN(MathHelper.MAX(1.0, num), 4.5) : MathHelper.MAX(MathHelper.MIN(-1.0, num), -4.5));
 			float num2 = 0f;
 			if (rope != null)
 			{
@@ -189,7 +190,7 @@ namespace CutTheRope.game
 			base.update(delta);
 			if (launcher && rope != null)
 			{
-				rope.bungeeAnchor.pos = global::CutTheRope.iframework.helpers.MathHelper.vect(x, y);
+				rope.bungeeAnchor.pos = MathHelper.vect(x, y);
 				rope.bungeeAnchor.pin = rope.bungeeAnchor.pos;
 				if (launcherIncreaseSpeed)
 				{
@@ -217,9 +218,9 @@ namespace CutTheRope.game
 			{
 				Vector v = mover.path[mover.targetPoint];
 				Vector pos = mover.pos;
-				Vector vector = global::CutTheRope.iframework.helpers.MathHelper.vectSub(v, pos);
+				Vector vector = MathHelper.vectSub(v, pos);
 				float t = 0f;
-				if (global::CutTheRope.iframework.helpers.MathHelper.ABS(vector.x) > 15f)
+				if (MathHelper.ABS(vector.x) > 15f)
 				{
 					float num = 10f;
 					t = ((vector.x > 0f) ? num : (0f - num));
@@ -235,7 +236,7 @@ namespace CutTheRope.game
 				}
 				else
 				{
-					wheelImage2.scaleX = (wheelImage2.scaleY = global::CutTheRope.iframework.helpers.MathHelper.MAX(0f, global::CutTheRope.iframework.helpers.MathHelper.MIN(1.2, 1.0 - (double)FrameworkTypes.RT(num2 / 1400f, (double)num2 / 700.0))));
+					wheelImage2.scaleX = (wheelImage2.scaleY = MathHelper.MAX(0f, MathHelper.MIN(1.2, 1.0 - (double)FrameworkTypes.RT(num2 / 1400f, (double)num2 / 700.0))));
 				}
 			}
 		}
@@ -246,7 +247,7 @@ namespace CutTheRope.game
 			{
 				shouldActivate = false;
 				spiderActive = true;
-				CTRSoundMgr._playSound(33);
+				CTRSoundMgr._playSound(SND_SPIDER_ACTIVATE);
 				spider.playTimeline(0);
 			}
 			if (!hasSpider || !spiderActive)
@@ -255,7 +256,7 @@ namespace CutTheRope.game
 			}
 			if (spider.getCurrentTimelineIndex() != 0)
 			{
-				spiderPos += delta * 117f;
+				spiderPos += delta * SPIDER_SPEED;
 			}
 			float num = 0f;
 			bool flag = false;
@@ -263,14 +264,14 @@ namespace CutTheRope.game
 			{
 				for (int i = 0; i < rope.drawPtsCount; i += 2)
 				{
-					Vector vector = global::CutTheRope.iframework.helpers.MathHelper.vect(rope.drawPts[i], rope.drawPts[i + 1]);
-					Vector vector2 = global::CutTheRope.iframework.helpers.MathHelper.vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
-					float num2 = global::CutTheRope.iframework.helpers.MathHelper.MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, global::CutTheRope.iframework.helpers.MathHelper.vectDistance(vector, vector2));
+					Vector vector = MathHelper.vect(rope.drawPts[i], rope.drawPts[i + 1]);
+					Vector vector2 = MathHelper.vect(rope.drawPts[i + 2], rope.drawPts[i + 3]);
+					float num2 = MathHelper.MAX(2f * Bungee.BUNGEE_REST_LEN / 3f, MathHelper.vectDistance(vector, vector2));
 					if (spiderPos >= num && (spiderPos < num + num2 || i > rope.drawPtsCount - 3))
 					{
 						float num3 = spiderPos - num;
-						Vector v = global::CutTheRope.iframework.helpers.MathHelper.vectSub(vector2, vector);
-						v = global::CutTheRope.iframework.helpers.MathHelper.vectMult(v, num3 / num2);
+						Vector v = MathHelper.vectSub(vector2, vector);
+						v = MathHelper.vectMult(v, num3 / num2);
 						spider.x = vector.x + v.x;
 						spider.y = vector.y + v.y;
 						if (i > rope.drawPtsCount - 3)
@@ -279,7 +280,7 @@ namespace CutTheRope.game
 						}
 						if (spider.getCurrentTimelineIndex() != 0)
 						{
-							spider.rotation = global::CutTheRope.iframework.helpers.MathHelper.RADIANS_TO_DEGREES(global::CutTheRope.iframework.helpers.MathHelper.vectAngleNormalized(v)) + 270f;
+							spider.rotation = MathHelper.RADIANS_TO_DEGREES(MathHelper.vectAngleNormalized(v)) + 270f;
 						}
 						break;
 					}
@@ -381,7 +382,7 @@ namespace CutTheRope.game
 			launcherIncreaseSpeed = true;
 			launcherSpeed = 130f;
 			Mover mover = new Mover().initWithPathCapacityMoveSpeedRotateSpeed(100, launcherSpeed, 0f);
-			mover.setPathFromStringandStart(NSObject.NSS("RC30"), global::CutTheRope.iframework.helpers.MathHelper.vect(x, y));
+			mover.setPathFromStringandStart(NSObject.NSS("RC30"), MathHelper.vect(x, y));
 			setMover(mover);
 			mover.start();
 		}
@@ -396,7 +397,7 @@ namespace CutTheRope.game
 			radius = r;
 			if (radius == -1f)
 			{
-				int r2 = global::CutTheRope.iframework.helpers.MathHelper.RND_RANGE(76, 77);
+				int r2 = MathHelper.RND_RANGE(IMG_OBJ_HOOK_01, IMG_OBJ_HOOK_02);
 				back = Image.Image_createWithResIDQuad(r2, 0);
 				back.doRestoreCutTransparency();
 				back.anchor = (back.parentAnchor = 18);
@@ -409,10 +410,10 @@ namespace CutTheRope.game
 			}
 			else
 			{
-				back = Image.Image_createWithResIDQuad(74, 0);
+				back = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_AUTO, 0);
 				back.doRestoreCutTransparency();
 				back.anchor = (back.parentAnchor = 18);
-				front = Image.Image_createWithResIDQuad(74, 1);
+				front = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_AUTO, 1);
 				front.anchor = (front.parentAnchor = 18);
 				addChild(back);
 				addChild(front);
@@ -420,7 +421,7 @@ namespace CutTheRope.game
 				front.visible = false;
 				radiusAlpha = 1f;
 				hideRadius = false;
-				vertexCount = (int)global::CutTheRope.iframework.helpers.MathHelper.MAX(16f, radius);
+				vertexCount = (int)MathHelper.MAX(16f, radius);
 				vertexCount /= 2;
 				if (vertexCount % 2 != 0)
 				{
@@ -431,16 +432,16 @@ namespace CutTheRope.game
 			}
 			if (wheel)
 			{
-				wheelImage = Image.Image_createWithResIDQuad(81, 0);
+				wheelImage = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 0);
 				wheelImage.anchor = (wheelImage.parentAnchor = 18);
 				addChild(wheelImage);
 				wheelImage.visible = false;
-				wheelImage2 = Image.Image_createWithResIDQuad(81, 1);
+				wheelImage2 = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 1);
 				wheelImage2.passTransformationsToChilds = false;
-				wheelHighlight = Image.Image_createWithResIDQuad(81, 2);
+				wheelHighlight = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 2);
 				wheelHighlight.anchor = (wheelHighlight.parentAnchor = 18);
 				wheelImage2.addChild(wheelHighlight);
-				wheelImage3 = Image.Image_createWithResIDQuad(81, 3);
+				wheelImage3 = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 3);
 				wheelImage3.anchor = (wheelImage3.parentAnchor = (wheelImage2.anchor = (wheelImage2.parentAnchor = 18)));
 				wheelImage2.addChild(wheelImage3);
 				addChild(wheelImage2);
@@ -456,16 +457,16 @@ namespace CutTheRope.game
 			moveOffset = o;
 			if ((double)moveLength > 0.0)
 			{
-				moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(82);
+				moveBackground = HorizontallyTiledImage.HorizontallyTiledImage_createWithResID(IMG_OBJ_HOOK_MOVABLE);
 				moveBackground.setTileHorizontallyLeftCenterRight(0, 2, 1);
 				moveBackground.width = (int)(l + 142f);
-				moveBackground.rotationCenterX = 0f - global::CutTheRope.iframework.helpers.MathHelper.round((double)moveBackground.width / 2.0) + 74f;
+				moveBackground.rotationCenterX = 0f - MathHelper.round((double)moveBackground.width / 2.0) + 74f;
 				moveBackground.x = -74f;
-				grabMoverHighlight = Image.Image_createWithResIDQuad(82, 3);
+				grabMoverHighlight = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_MOVABLE, 3);
 				grabMoverHighlight.visible = false;
 				grabMoverHighlight.anchor = (grabMoverHighlight.parentAnchor = 18);
 				addChild(grabMoverHighlight);
-				grabMover = Image.Image_createWithResIDQuad(82, 4);
+				grabMover = Image.Image_createWithResIDQuad(IMG_OBJ_HOOK_MOVABLE, 4);
 				grabMover.visible = false;
 				grabMover.anchor = (grabMover.parentAnchor = 18);
 				addChild(grabMover);
@@ -495,16 +496,16 @@ namespace CutTheRope.game
 
 		public virtual void setBee()
 		{
-			bee = Image.Image_createWithResIDQuad(98, 1);
+			bee = Image.Image_createWithResIDQuad(IMG_OBJ_BEE_HD, 1);
 			bee.blendingMode = 1;
 			bee.doRestoreCutTransparency();
 			bee.parentAnchor = 18;
-			Animation animation = Animation.Animation_createWithResID(98);
+			Animation animation = Animation.Animation_createWithResID(IMG_OBJ_BEE_HD);
 			animation.parentAnchor = (animation.anchor = 9);
 			animation.doRestoreCutTransparency();
 			animation.addAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
 			animation.playTimeline(0);
-			animation.jumpTo(global::CutTheRope.iframework.helpers.MathHelper.RND_RANGE(0, 2));
+			animation.jumpTo(MathHelper.RND_RANGE(0, 2));
 			bee.addChild(animation);
 			Vector quadOffset = Image.getQuadOffset(98, 0);
 			bee.x = 0f - quadOffset.x;
@@ -520,7 +521,7 @@ namespace CutTheRope.game
 			hasSpider = s;
 			shouldActivate = false;
 			spiderActive = false;
-			spider = Animation.Animation_createWithResID(64);
+			spider = Animation.Animation_createWithResID(IMG_OBJ_SPIDER);
 			spider.doRestoreCutTransparency();
 			spider.anchor = 18;
 			spider.x = x;
@@ -541,10 +542,7 @@ namespace CutTheRope.game
 
 		public override void dealloc()
 		{
-			if (vertices != null)
-			{
-				NSObject.free(vertices);
-			}
+			vertices = null;
 			destroyRope();
 			base.dealloc();
 		}

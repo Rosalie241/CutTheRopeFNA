@@ -15,7 +15,7 @@ namespace CutTheRope.windows
 
 		private static MouseCursor mouseCursor_ = new MouseCursor();
 
-		private static Game1 game_;
+		private static CutTheRopeGame game_;
 
 		public static SpriteBatch SpriteBatch
 		{
@@ -73,7 +73,7 @@ namespace CutTheRope.windows
 			}
 		}
 
-		public static Game1 XnaGame
+		public static CutTheRopeGame XnaGame
 		{
 			get
 			{

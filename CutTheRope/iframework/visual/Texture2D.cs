@@ -62,8 +62,6 @@ namespace CutTheRope.iframework.visual
 
 		public Vector preCutSize;
 
-		private bool _isWvga;
-
 		private static Texture2D root;
 
 		private static Texture2D tail;
@@ -110,11 +108,6 @@ namespace CutTheRope.iframework.visual
 			return this;
 		}
 
-		public bool isWvga()
-		{
-			return _isWvga;
-		}
-
 		public virtual void setQuadsCapacity(int n)
 		{
 			quadsCount = n;
@@ -128,11 +121,6 @@ namespace CutTheRope.iframework.visual
 			quads[n] = GLDrawer.getTextureCoordinates(this, rect);
 			quadRects[n] = rect;
 			quadOffsets[n] = MathHelper.vectZero;
-		}
-
-		public virtual void setWvga()
-		{
-			_isWvga = true;
 		}
 
 		public virtual void setScale(float scaleX, float scaleY)
@@ -194,28 +182,10 @@ namespace CutTheRope.iframework.visual
 
 		public virtual void calculateForQuickDrawing()
 		{
-			if (_isWvga)
-			{
-				_realWidth = (int)((float)_width * _maxS / _scaleX);
-				_realHeight = (int)((float)_height * _maxT / _scaleY);
-				_invWidth = 1f / ((float)_width / _scaleX);
-				_invHeight = 1f / ((float)_height / _scaleY);
-			}
-			else
-			{
-				_realWidth = (int)((float)_width * _maxS);
-				_realHeight = (int)((float)_height * _maxT);
-				_invWidth = 1f / (float)_width;
-				_invHeight = 1f / (float)_height;
-			}
-		}
-
-		public static void setAntiAliasTexParameters()
-		{
-		}
-
-		public static void setAliasTexParameters()
-		{
+			_realWidth = (int)((float)_width * _maxS);
+			_realHeight = (int)((float)_height * _maxT);
+			_invWidth = 1f / (float)_width;
+			_invHeight = 1f / (float)_height;
 		}
 
 		public virtual void reg()
@@ -269,7 +239,6 @@ namespace CutTheRope.iframework.visual
 			imageLoaded(xnaTexture_.Width, xnaTexture_.Height);
 			quadsCount = 0;
 			calculateForQuickDrawing();
-			resume();
 			return this;
 		}
 
@@ -291,37 +260,10 @@ namespace CutTheRope.iframework.visual
 			_maxT = (float)h / (float)num2;
 		}
 
-		private void resume()
-		{
-		}
 
 		public static void setDefaultAlphaPixelFormat(Texture2DPixelFormat format)
 		{
 			_defaultAlphaPixelFormat = format;
-		}
-
-		public void optimizeMemory()
-		{
-		}
-
-		public virtual void suspend()
-		{
-		}
-
-		public static void suspendAll()
-		{
-			for (Texture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
-			{
-				texture2D.suspend();
-			}
-		}
-
-		public static void resumeAll()
-		{
-			for (Texture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
-			{
-				texture2D.resume();
-			}
 		}
 
 		public virtual NSObject initFromPixels(int x, int y, int w, int h)
@@ -359,7 +301,7 @@ namespace CutTheRope.iframework.visual
 			_maxT = (float)h / (float)num2;
 			quadsCount = 0;
 			calculateForQuickDrawing();
-			resume();
+			
 			return this;
 		}
 

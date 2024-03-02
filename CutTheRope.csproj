@@ -11,61 +11,77 @@
     <Company>ZeptoLab</Company>
     <Authors>Rosalie</Authors>
     <Copyright>Copyright ©  2012</Copyright>
-    <Version>1.0.4</Version>
+    <Version>1.0.6</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <ProductVersion>$(Version)</ProductVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
+  <!-- set variables -->
+  <PropertyGroup>
+    <FNALibsArch Condition="('$(RuntimeIdentifier)' == '' And 
+                              $([MSBuild]::IsOsPlatform('Linux')) And 
+                              '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64')
+                              Or '$(RuntimeIdentifier)' == 'linux-x64'">lib64</FNALibsArch>
+    <FNALibsArch Condition="('$(RuntimeIdentifier)' == '' And 
+                              $([MSBuild]::IsOsPlatform('Linux')) And 
+                              '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64')
+                              Or '$(RuntimeIdentifier)' == 'linux-arm64'">libaarch64</FNALibsArch>
+    <FNALibsArch Condition="('$(RuntimeIdentifier)' == '' And 
+                              $([MSBuild]::IsOsPlatform('Windows')) And 
+                              '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64')
+                              Or '$(RuntimeIdentifier)' == 'win-x64'">x64</FNALibsArch>
+    <FNALibsArch Condition="('$(RuntimeIdentifier)' == '' And 
+                              $([MSBuild]::IsOsPlatform('Windows')) And 
+                              '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X86')
+                              Or '$(RuntimeIdentifier)' == 'win-x86'">x86</FNALibsArch>
+  </PropertyGroup>
   <!-- publish settings -->
   <PropertyGroup>
-    <PublishSingleFile>true</PublishSingleFile>
+    <PublishSingleFile Condition="'$(PublishAot)' != 'true'">true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
     <IsTrimmable>true</IsTrimmable>
-    <TrimMode>partial</TrimMode>
+    <TrimMode>full</TrimMode>
   </PropertyGroup>
+  <!-- AOT settings -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'
+                         Or '$(RuntimeIdentifier)' == 'linux-arm64'">
+    <NativeLibrary Include="-L$(MSBuildProjectDirectory)/fnalibs/$(FNALibsArch)/" />
+    <NativeLibrary Include="-l:libSDL2-2.0.so.0" />
+    <NativeLibrary Include="-l:libFNA3D.so.0" />
+    <NativeLibrary Include="-l:libFAudio.so.0" />
+    <NativeLibrary Include="-l:libtheorafile.so" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <NativeLibrary Include="$(MSBuildProjectDirectory)\fnalibs\$(FNALibsArch)\lib\SDL2.lib" />
+    <NativeLibrary Include="$(MSBuildProjectDirectory)\fnalibs\$(FNALibsArch)\lib\FNA3D.lib" />
+    <NativeLibrary Include="$(MSBuildProjectDirectory)\fnalibs\$(FNALibsArch)\lib\FAudio.lib" />
+    <NativeLibrary Include="$(MSBuildProjectDirectory)\fnalibs\$(FNALibsArch)\lib\libtheorafile.lib" />  
+  </ItemGroup>
+  <ItemGroup>
+    <RdXmlFile Include="rd.xml" />
+    <DirectPInvokeList Include="SDLApis.txt" />
+    <DirectPInvoke Include="FNA3D" />
+    <DirectPInvoke Include="FAudio" />
+    <DirectPInvoke Include="libtheorafile" />
+  </ItemGroup>
   <!-- application settings -->
   <PropertyGroup>
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <!-- FNA libraries -->
   <ItemGroup>
-    <Content Include="fnalibs\lib64\**" Condition="('$(RuntimeIdentifier)' == '' And 
-                                                     $([MSBuild]::IsOsPlatform('Linux')) And 
-                                                     '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64')
-                                                     Or '$(RuntimeIdentifier)' == 'linux-x64'">
-      <TargetPath>%(Filename)%(Extension)</TargetPath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="fnalibs\libaarch64\**" Condition="('$(RuntimeIdentifier)' == '' And 
-                                                          $([MSBuild]::IsOsPlatform('Linux')) And 
-                                                          '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64')
-                                                          Or '$(RuntimeIdentifier)' == 'linux-arm64'">
-      <TargetPath>%(Filename)%(Extension)</TargetPath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="fnalibs\x64\**" Condition="('$(RuntimeIdentifier)' == '' And 
-                                                     $([MSBuild]::IsOsPlatform('Windows')) And 
-                                                     '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64')
-                                                     Or '$(RuntimeIdentifier)' == 'win-x64'">
-      <TargetPath>%(Filename)%(Extension)</TargetPath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="fnalibs\x86\**" Condition="('$(RuntimeIdentifier)' == '' And 
-                                                     $([MSBuild]::IsOsPlatform('Windows')) And 
-                                                     '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X86')
-                                                     Or '$(RuntimeIdentifier)' == 'win-x86'">
+    <Content Include="$(MSBuildProjectDirectory)\fnalibs\$(FNALibsArch)\*.*">
       <TargetPath>%(Filename)%(Extension)</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <!-- bmp file is only needed for Linux -->
-    <Content Include="app.bmp" 
-        Condition="('$(RuntimeIdentifier)' == '' And 
-                     $([MSBuild]::IsOsPlatform('Linux')))
-                     Or '$(RuntimeIdentifier)' == 'linux-x64'
-                     Or '$(RuntimeIdentifier)' == 'linux-arm64'">
+    <Content Include="app.bmp" Condition="('$(RuntimeIdentifier)' == '' 
+                                            And $([MSBuild]::IsOsPlatform('Linux')))
+                                            Or '$(RuntimeIdentifier)' == 'linux-x64'
+                                            Or '$(RuntimeIdentifier)' == 'linux-arm64'">
       <TargetPath>$(AssemblyTitle)%(Extension)</TargetPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

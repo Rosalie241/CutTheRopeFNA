@@ -9,8 +9,6 @@ namespace CutTheRope.iframework.visual
 
 		private char[] sortedChars;
 
-		private bool _isWvga;
-
 		private int quadsCount;
 
 		private float height;
@@ -21,11 +19,10 @@ namespace CutTheRope.iframework.visual
 		{
 			if (base.init() != null)
 			{
-				_isWvga = charmapfile.isWvga();
 				charmap = new Image().initWithTexture(charmapfile);
 				quadsCount = charmapfile.quadsCount;
 				height = charmapfile.quadRects[0].h;
-				chars = strParam.copy();
+				chars = strParam;
 				sortedChars = chars.getCharacters();
 				Array.Sort(sortedChars);
 				charOffset = 0f;
@@ -47,12 +44,6 @@ namespace CutTheRope.iframework.visual
 			charOffset = co;
 			lineOffset = lo;
 			spaceWidth = sw;
-			if (_isWvga)
-			{
-				charOffset = (int)((double)charOffset / 1.5);
-				lineOffset = (int)((double)lineOffset / 1.5);
-				spaceWidth = (int)((double)spaceWidth / 1.5);
-			}
 		}
 
 		public override float fontHeight()

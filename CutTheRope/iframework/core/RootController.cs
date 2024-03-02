@@ -6,6 +6,7 @@ using CutTheRope.ios;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using MathHelper = CutTheRope.iframework.helpers.MathHelper;
 
 namespace CutTheRope.iframework.core
 {
@@ -94,7 +95,6 @@ namespace CutTheRope.iframework.core
 			}
 			Application.sharedCanvas().beforeRender();
 			OpenGL.glPushMatrix();
-			applyLandscape();
 			if (transitionTime == -1f)
 			{
 				currentController.activeView().draw();
@@ -105,13 +105,11 @@ namespace CutTheRope.iframework.core
 				if (lastTime > transitionTime)
 				{
 					transitionTime = -1f;
-					NSObject.NSREL(prevScreenImage);
 					if (prevScreenImage != null)
 					{
 						prevScreenImage.xnaTexture_.Dispose();
 					}
 					prevScreenImage = null;
-					NSObject.NSREL(nextScreenImage);
 					if (nextScreenImage != null)
 					{
 						nextScreenImage.xnaTexture_.Dispose();
@@ -121,10 +119,6 @@ namespace CutTheRope.iframework.core
 			}
 			OpenGL.glPopMatrix();
 			Application.sharedCanvas().afterRender();
-		}
-
-		private void applyLandscape()
-		{
 		}
 
 		public virtual void setViewTransition(int transition)
@@ -149,7 +143,7 @@ namespace CutTheRope.iframework.core
 			case 4:
 			case 5:
 			{
-				float num = global::CutTheRope.iframework.helpers.MathHelper.MIN(1.0, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
+				float num = MathHelper.MIN(1.0, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
 				if ((double)num < 0.5)
 				{
 					if (prevScreenImage != null)
@@ -200,7 +194,6 @@ namespace CutTheRope.iframework.core
 				break;
 			}
 			}
-			applyLandscape();
 			OpenGL.glDisable(0);
 			OpenGL.glDisable(1);
 		}
@@ -208,10 +201,6 @@ namespace CutTheRope.iframework.core
 		public override void activate()
 		{
 			base.activate();
-		}
-
-		private void runLoop()
-		{
 		}
 
 		public virtual void onControllerActivated(ViewController c)
@@ -247,15 +236,12 @@ namespace CutTheRope.iframework.core
 				OpenGL.glClearColor(Color.Black);
 				OpenGL.glClear(0);
 				transitionTime = lastTime + transitionDelay;
-				applyLandscape();
 				currentController.activeView().draw();
-				NSObject.NSREL(nextScreenImage);
 				if (nextScreenImage != null)
 				{
 					nextScreenImage.xnaTexture_.Dispose();
 				}
 				nextScreenImage = screenGrabber.grab();
-				NSObject.NSRET(nextScreenImage);
 				OpenGL.glLoadIdentity();
 			}
 		}
@@ -268,15 +254,12 @@ namespace CutTheRope.iframework.core
 				Application.sharedCanvas().setDefaultProjection();
 				OpenGL.glClearColor(Color.Black);
 				OpenGL.glClear(0);
-				applyLandscape();
 				previousView.draw();
-				NSObject.NSREL(prevScreenImage);
 				if (prevScreenImage != null)
 				{
 					prevScreenImage.xnaTexture_.Dispose();
 				}
 				prevScreenImage = screenGrabber.grab();
-				NSObject.NSRET(prevScreenImage);
 				OpenGL.glLoadIdentity();
 			}
 		}
@@ -294,11 +277,6 @@ namespace CutTheRope.iframework.core
 		public virtual void resume()
 		{
 			suspended = false;
-		}
-
-		public override bool mouseMoved(float x, float y)
-		{
-			return currentController.mouseMoved(x, y);
 		}
 
 		public override bool backButtonPressed()
@@ -383,12 +361,9 @@ namespace CutTheRope.iframework.core
 
 		public override void fullscreenToggled(bool isFullscreen)
 		{
-			try
+			if (currentController != null)
 			{
 				currentController.fullscreenToggled(isFullscreen);
-			}
-			catch (Exception)
-			{
 			}
 		}
 	}

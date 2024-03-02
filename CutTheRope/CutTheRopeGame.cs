@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.Threading;
 using CutTheRope.ctr_commons;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -15,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CutTheRope
 {
-	public class Game1 : Game
+	public class CutTheRopeGame : Game
 	{
 		private Dictionary<Keys, bool> keyState = new Dictionary<Keys, bool>();
 
@@ -29,7 +26,7 @@ namespace CutTheRope
 
 		private bool fixWindowSize = false;
 
-		public Game1()
+		public CutTheRopeGame()
 		{
 			Global.XnaGame = this;
 			base.Content.RootDirectory = "content";
@@ -55,9 +52,9 @@ namespace CutTheRope
 			bool isFullScreen = (width <= 0 || Preferences._getBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
 			Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, width, isFullScreen);
 
-			base.Activated   += Game1_Activated;
-			base.Deactivated += Game1_Deactivated;
-			base.Exiting     += Game1_Exiting;
+			base.Activated   += Game_Activated;
+			base.Deactivated += Game_Deactivated;
+			base.Exiting     += Game_Exiting;
 		}
 
 		private void Window_ClientSizeChanged(object sender, EventArgs e)
@@ -69,20 +66,20 @@ namespace CutTheRope
 			fixWindowElapsedTime = TimeSpan.Zero;
 		}
 
-		private void Game1_Exiting(object sender, EventArgs e)
+		private void Game_Exiting(object sender, EventArgs e)
 		{
 			Preferences._savePreferences();
 			Preferences.Update();
 		}
 
-		private void Game1_Deactivated(object sender, EventArgs e)
+		private void Game_Deactivated(object sender, EventArgs e)
 		{
-			CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+			CtrRenderer.onPause();
 		}
 
-		private void Game1_Activated(object sender, EventArgs e)
+		private void Game_Activated(object sender, EventArgs e)
 		{
-			CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
+			CtrRenderer.onResume();
 		}
 
 		protected override void LoadContent()
@@ -93,8 +90,7 @@ namespace CutTheRope
 			OpenGL.Init();
 			Global.MouseCursor.Load(base.Content);
 			Global.ScreenSizeManager.InitCanvas();
-			CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
-			CtrRenderer.onSurfaceCreated();
+			CtrRenderer.onInit(GetSystemLanguage());
 			CtrRenderer.onSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
 		}
 
@@ -105,18 +101,18 @@ namespace CutTheRope
 			{
 				result = Language.LANG_RU;
 			}
-			if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de")
+			else if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de")
 			{
 				result = Language.LANG_DE;
 			}
-			if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")
+			else if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")
 			{
 				result = Language.LANG_FR;
 			}
 			return result;
 		}
 
-		public bool IsKeyPressed(Microsoft.Xna.Framework.Input.Keys key)
+		public bool IsKeyPressed(Keys key)
 		{
 			bool value = false;
 			keyState.TryGetValue(key, out value);
@@ -129,7 +125,7 @@ namespace CutTheRope
 			return false;
 		}
 
-		public bool IsKeyDown(Microsoft.Xna.Framework.Input.Keys key)
+		public bool IsKeyDown(Keys key)
 		{
 			return keyboardStateXna.IsKeyDown(key);
 		}
@@ -154,6 +150,7 @@ namespace CutTheRope
 					Global.ScreenSizeManager.FixWindowSize(base.Window.ClientBounds);
 					fixWindowElapsedTime = TimeSpan.Zero;
 					fixWindowSize        = false;
+					return;
 				}
 			}
 
@@ -169,13 +166,12 @@ namespace CutTheRope
 
 			if (IsKeyPressed(Keys.Escape))
 			{
-				global::CutTheRope.iframework.core.Application.sharedMovieMgr().stop();
-				CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
+				Application.sharedMovieMgr().stop();
+				CtrRenderer.onBackPressed();
+				return;
 			}
 
-			MouseState mouseState = Mouse.GetState();
-			CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation(mouseState));
-			global::CutTheRope.iframework.core.Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
+			CtrRenderer.onTouch(Global.MouseCursor.GetTouchLocation(Mouse.GetState()));
 			CtrRenderer.update((float)gameTime.ElapsedGameTime.TotalSeconds);
 			base.Update(gameTime);
 		}
@@ -183,25 +179,25 @@ namespace CutTheRope
 		public void DrawMovie()
 		{
 			_DrawMovie = true;
-			base.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
-			Texture2D texture = global::CutTheRope.iframework.core.Application.sharedMovieMgr().getTexture();
+			Global.GraphicsDevice.Clear(Color.Black);
+			Texture2D texture = Application.sharedMovieMgr().getTexture();
 			if (texture == null)
 			{
 				return;
 			}
 			Global.GraphicsDevice.SetRenderTarget(null);
-			base.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+			Global.GraphicsDevice.Clear(Color.Black);
 			Global.ScreenSizeManager.FullScreenCropWidth = false;
 			Global.ScreenSizeManager.ApplyViewportToDevice();
-			Microsoft.Xna.Framework.Rectangle destinationRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, base.GraphicsDevice.Viewport.Width, base.GraphicsDevice.Viewport.Height);
+			Microsoft.Xna.Framework.Rectangle destinationRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
 			Global.SpriteBatch.Begin();
-			Global.SpriteBatch.Draw(texture, destinationRectangle, Microsoft.Xna.Framework.Color.White);
+			Global.SpriteBatch.Draw(texture, destinationRectangle, Color.White);
 			Global.SpriteBatch.End();
 		}
 
 		protected override void Draw(GameTime gameTime)
 		{
-			base.GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+			Global.GraphicsDevice.Clear(Color.Black);
 			Global.ScreenSizeManager.FullScreenCropWidth = true;
 			Global.ScreenSizeManager.ApplyViewportToDevice();
 			_DrawMovie = false;

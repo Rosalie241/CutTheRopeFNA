@@ -17,16 +17,6 @@ namespace CutTheRope.iframework.core
 
 		public static bool GameSaveRequested = false;
 
-		public override NSObject init()
-		{
-			if (base.init() == null)
-			{
-				return null;
-			}
-			_loadPreferences();
-			return this;
-		}
-
 		public virtual void setIntforKey(int v, string k, bool comit)
 		{
 			_setIntforKey(v, k, comit);
@@ -210,7 +200,7 @@ namespace CutTheRope.iframework.core
 			}
 			catch (Exception ex)
 			{
-				FrameworkTypes._LOG("Error: cannot save, " + ex.ToString());
+				FrameworkTypes._LOG("Error: cannot save: " + ex.ToString());
 				return flag;
 			}
 		}
@@ -241,7 +231,7 @@ namespace CutTheRope.iframework.core
 			}
 			catch (Exception ex)
 			{
-				FrameworkTypes._LOG("Error: cannot load, " + ex.ToString());
+				FrameworkTypes._LOG("Error: cannot load: " + ex.ToString());
 				return flag;
 			}
 		}

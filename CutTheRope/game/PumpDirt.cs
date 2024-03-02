@@ -69,7 +69,7 @@ namespace CutTheRope.game
 			if (p.life > 0f)
 			{
 				p.dir = MathHelper.vectMult(p.dir, 0.9);
-				Vector v = MathHelper.vectMult(p.dir, delta);
+				Vector v = MathHelper.vectMult(p.dir, 0.0166667f);
 				v = MathHelper.vectAdd(v, gravity);
 				p.pos = MathHelper.vectAdd(p.pos, v);
 				p.color.r += p.deltaColor.r * delta;

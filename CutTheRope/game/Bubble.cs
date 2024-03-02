@@ -23,11 +23,6 @@ namespace CutTheRope.game
 			return (Bubble)new Bubble().initWithTexture(t);
 		}
 
-		public static Bubble Bubble_createWithResID(int r)
-		{
-			return Bubble_create(Application.getTexture(r));
-		}
-
 		public static Bubble Bubble_createWithResIDQuad(int r, int q)
 		{
 			Bubble bubble = Bubble_create(Application.getTexture(r));

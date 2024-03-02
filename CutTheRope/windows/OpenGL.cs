@@ -75,9 +75,9 @@ namespace CutTheRope.windows
 
 		private static Matrix s_matrixProjection = Matrix.Identity;
 
-		private static global::CutTheRope.iframework.visual.Texture2D s_Texture;
+		private static iframework.visual.Texture2D s_Texture;
 
-		private static global::CutTheRope.iframework.visual.Texture2D s_Texture_OptimizeLastUsed;
+		private static iframework.visual.Texture2D s_Texture_OptimizeLastUsed;
 
 		private static Color s_glClearColor = Color.White;
 
@@ -193,8 +193,9 @@ namespace CutTheRope.windows
 				Global.GraphicsDevice.SetRenderTarget(s_RenderTarget);
 				Global.GraphicsDevice.Clear(Color.Black);
 			}
-			else
+			else if (s_RenderTarget != null)
 			{
+				s_RenderTarget.Dispose();
 				s_RenderTarget = null;
 			}
 		}
@@ -277,7 +278,7 @@ namespace CutTheRope.windows
 			s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
 		}
 
-		public static void glBindTexture(global::CutTheRope.iframework.visual.Texture2D t)
+		public static void glBindTexture(CutTheRope.iframework.visual.Texture2D t)
 		{
 			s_Texture = t;
 		}

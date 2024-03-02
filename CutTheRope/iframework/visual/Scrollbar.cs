@@ -3,6 +3,7 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.windows;
 using Microsoft.Xna.Framework;
+using MathHelper = CutTheRope.iframework.helpers.MathHelper;
 
 namespace CutTheRope.iframework.visual
 {
@@ -77,9 +78,9 @@ namespace CutTheRope.iframework.visual
 				width = (int)w;
 				height = (int)h;
 				vertical = v;
-				sp = global::CutTheRope.iframework.helpers.MathHelper.vectUndefined;
-				mp = global::CutTheRope.iframework.helpers.MathHelper.vectUndefined;
-				sc = global::CutTheRope.iframework.helpers.MathHelper.vectUndefined;
+				sp = MathHelper.vectUndefined;
+				mp = MathHelper.vectUndefined;
+				sc = MathHelper.vectUndefined;
 				backColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.5f);
 				scrollerColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0.5f);
 			}

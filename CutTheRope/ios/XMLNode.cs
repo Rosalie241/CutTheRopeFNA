@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using CutTheRope.game;
+using CutTheRope.windows;
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.ios
@@ -170,7 +171,25 @@ namespace CutTheRope.ios
 
 		public static XMLNode parseXML(string fileName)
 		{
-			return ParseLINQ(fileName);
+			XDocument xDocument = null;
+			string xml = ResDataPhoneFull.GetXml(fileName);
+			if (xml != null)
+			{
+				xDocument = XDocument.Parse(xml);
+			}
+			else
+			{
+				try
+				{
+					Stream stream = TitleContainer.OpenStream(Global.XnaGame.Content.RootDirectory + "/" + fileName);
+					xDocument = XDocument.Load(stream);
+					stream.Dispose();
+				}
+				catch (Exception)
+				{
+				}
+			}
+			return ReadNodeLINQ(xDocument.Elements().First(), null);
 		}
 
 		private static XMLNode ReadNodeLINQ(XElement nodeLinq, XMLNode parent)
@@ -198,26 +217,6 @@ namespace CutTheRope.ios
 				ReadNodeLINQ(item2, xMLNode);
 			}
 			return xMLNode;
-		}
-
-		private static XMLNode ParseLINQ(string fileName)
-		{
-			XDocument xDocument = null;
-			try
-			{
-				Stream stream = TitleContainer.OpenStream("content/" + ResDataPhoneFull.ContentFolder + fileName);
-				xDocument = XDocument.Load(stream);
-				stream.Dispose();
-			}
-			catch (Exception)
-			{
-			}
-			if (xDocument == null)
-			{
-				xDocument = XDocument.Parse(ResDataPhoneFull.GetXml(fileName));
-			}
-			IEnumerable<XElement> source = xDocument.Elements();
-			return ReadNodeLINQ(source.First(), null);
 		}
 	}
 }

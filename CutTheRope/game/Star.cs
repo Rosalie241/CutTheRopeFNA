@@ -24,13 +24,6 @@ namespace CutTheRope.game
 			return Star_create(Application.getTexture(r));
 		}
 
-		public static Star Star_createWithResIDQuad(int r, int q)
-		{
-			Star star = Star_create(Application.getTexture(r));
-			star.setDrawQuad(q);
-			return star;
-		}
-
 		public override NSObject init()
 		{
 			if (base.init() != null)
@@ -62,7 +55,7 @@ namespace CutTheRope.game
 		{
 			if (!((double)timeout <= 0.0))
 			{
-				timedAnim = Animation.Animation_createWithResID(78);
+				timedAnim = Animation.Animation_createWithResID(IMG_OBJ_STAR_IDLE);
 				timedAnim.anchor = (timedAnim.parentAnchor = 18);
 				float d = timeout / 37f;
 				timedAnim.addAnimationWithIDDelayLoopFirstLast(0, d, Timeline.LoopType.TIMELINE_NO_LOOP, 19, 55);
@@ -92,7 +85,7 @@ namespace CutTheRope.game
 			addTimelinewithID(timeline3, 0);
 			playTimeline(0);
 			Timeline.updateTimeline(timeline3, (float)((double)MathHelper.RND_RANGE(0, 20) / 10.0));
-			Animation animation = Animation.Animation_createWithResID(78);
+			Animation animation = Animation.Animation_createWithResID(IMG_OBJ_STAR_IDLE);
 			animation.doRestoreCutTransparency();
 			animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
 			animation.playTimeline(0);

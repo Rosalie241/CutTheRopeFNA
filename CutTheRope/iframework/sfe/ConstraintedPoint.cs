@@ -23,7 +23,7 @@ namespace CutTheRope.iframework.sfe
 		{
 			if (base.init() != null)
 			{
-				prevPos = MathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
+				prevPos = MathHelper.vect(vectUndefinedValue, vectUndefinedValue);
 				pin = MathHelper.vect(-1f, -1f);
 				constraints = new List<Constraint>();
 			}
@@ -132,7 +132,7 @@ namespace CutTheRope.iframework.sfe
 		public override void resetAll()
 		{
 			base.resetAll();
-			prevPos = MathHelper.vect(2.1474836E+09f, 2.1474836E+09f);
+			prevPos = MathHelper.vect(vectUndefinedValue, vectUndefinedValue);
 			removeConstraints();
 		}
 
@@ -164,7 +164,7 @@ namespace CutTheRope.iframework.sfe
 			}
 			totalForce = MathHelper.vectMult(totalForce, invWeight);
 			a = MathHelper.vectMult(totalForce, (double)delta / 1.0 * (double)delta / 1.0);
-			if (prevPos.x == 2.1474836E+09f)
+			if (prevPos.x == vectUndefinedValue)
 			{
 				prevPos = pos;
 			}
@@ -253,7 +253,7 @@ namespace CutTheRope.iframework.sfe
 			}
 			p.totalForce = MathHelper.vectMult(p.totalForce, p.invWeight);
 			p.a = MathHelper.vectMult(p.totalForce, (float)((double)delta / 1.0 * 0.01600000075995922 * (double)koeff));
-			if (p.prevPos.x == 2.1474836E+09f)
+			if (p.prevPos.x == vectUndefinedValue)
 			{
 				p.prevPos = p.pos;
 			}

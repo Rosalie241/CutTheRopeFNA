@@ -61,24 +61,18 @@ namespace CutTheRope.iframework.core
 				return value;
 			}
 			string path = ((resType != ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "");
-			bool flag = false;
 			float scaleX = getNormalScaleX(resID);
 			float scaleY = getNormalScaleY(resID);
-			if (flag)
-			{
-				scaleX = getWvgaScaleX(resID);
-				scaleY = getWvgaScaleY(resID);
-			}
 			switch (resType)
 			{
 			case ResourceType.IMAGE:
-				value = loadTextureImageInfo(path, null, flag, scaleX, scaleY);
+				value = loadTextureImageInfo(path, null, scaleX, scaleY);
 				break;
 			case ResourceType.SOUND:
 				value = loadSoundInfo(path);
 				break;
 			case ResourceType.FONT:
-				value = loadVariableFontInfo(path, resID, flag);
+				value = loadVariableFontInfo(path, resID);
 				s_Resources.Remove(resID);
 				break;
 			case ResourceType.STRINGS:
@@ -141,7 +135,7 @@ namespace CutTheRope.iframework.core
 			return new NSString();
 		}
 
-		public virtual FontGeneric loadVariableFontInfo(string path, int resID, bool isWvga)
+		public virtual FontGeneric loadVariableFontInfo(string path, int resID)
 		{
 			XMLNode xMLNode = XMLNode.parseXML(path);
 			int num = xMLNode["charoff"].intValue();
@@ -159,24 +153,15 @@ namespace CutTheRope.iframework.core
 			return fontGeneric;
 		}
 
-		public virtual Texture2D loadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
+		public virtual Texture2D loadTextureImageInfo(string path, XMLNode i, float scaleX, float scaleY)
 		{
 			if (i == null)
 			{
 				i = XMLNode.parseXML(path);
 			}
 			int num = i["filter"].intValue();
-			bool flag = (num & 1) == 1;
 			int defaultAlphaPixelFormat = i["format"].intValue();
-			string text = fullPathFromRelativePath(path);
-			if (flag)
-			{
-				Texture2D.setAntiAliasTexParameters();
-			}
-			else
-			{
-				Texture2D.setAliasTexParameters();
-			}
+			string text = path;
 			Texture2D.setDefaultAlphaPixelFormat((Texture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
 			Texture2D texture2D = new Texture2D().initWithPath(text, true);
 			if (texture2D == null)
@@ -184,16 +169,12 @@ namespace CutTheRope.iframework.core
 				throw new Exception("texture not found: " + text);
 			}
 			Texture2D.setDefaultAlphaPixelFormat(Texture2D.kTexture2DPixelFormat_Default);
-			if (isWvga)
-			{
-				texture2D.setWvga();
-			}
 			texture2D.setScale(scaleX, scaleY);
-			setTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
+			setTextureInfo(texture2D, i, scaleX, scaleY);
 			return texture2D;
 		}
 
-		public virtual void setTextureInfo(Texture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
+		public virtual void setTextureInfo(Texture2D t, XMLNode i, float scaleX, float scaleY)
 		{
 			t.preCutSize = MathHelper.vectUndefined;
 			XMLNode xMLNode = i.findChildWithTagNameRecursively("quads", false);
@@ -231,17 +212,7 @@ namespace CutTheRope.iframework.core
 			if (xMLNode3 != null && xMLNode4 != null)
 			{
 				t.preCutSize = MathHelper.vect(xMLNode3.data.intValue(), xMLNode4.data.intValue());
-				if (isWvga)
-				{
-					t.preCutSize.x /= 1.5f;
-					t.preCutSize.y /= 1.5f;
-				}
 			}
-		}
-
-		private static string fullPathFromRelativePath(string relPath)
-		{
-			return ResDataPhoneFull.ContentFolder + relPath;
 		}
 
 		private void setQuadsInfo(Texture2D t, float[] data, int size, float scaleX, float scaleY)
@@ -267,7 +238,6 @@ namespace CutTheRope.iframework.core
 			{
 				t._lowypoint = num2;
 			}
-			t.optimizeMemory();
 		}
 
 		private void setOffsetsInfo(Texture2D t, float[] data, int size, float scaleX, float scaleY)
@@ -283,27 +253,6 @@ namespace CutTheRope.iframework.core
 			}
 		}
 
-		public virtual bool isWvgaResource(int r)
-		{
-			switch (r)
-			{
-			case 126:
-			case 127:
-			case 128:
-			case 129:
-			case 130:
-			case 131:
-			case 132:
-			case 133:
-			case 134:
-			case 135:
-			case 136:
-				return false;
-			default:
-				return true;
-			}
-		}
-
 		public virtual float getNormalScaleX(int r)
 		{
 			return 1f;
@@ -312,16 +261,6 @@ namespace CutTheRope.iframework.core
 		public virtual float getNormalScaleY(int r)
 		{
 			return 1f;
-		}
-
-		public virtual float getWvgaScaleX(int r)
-		{
-			return 1.5f;
-		}
-
-		public virtual float getWvgaScaleY(int r)
-		{
-			return 1.5f;
 		}
 
 		public virtual void initLoading()
@@ -412,61 +351,62 @@ namespace CutTheRope.iframework.core
 
 		private void loadResource(int resId)
 		{
-			if (150 < resId)
+			if (resId > RESOURCES_COUNT)
 			{
 				return;
 			}
-			if (10 == resId)
+			if (resId == STR_MENU)
 			{
 				if (xmlStrings == null)
 				{
 					xmlStrings = XMLNode.parseXML("menu_strings.xml");
 				}
-				return;
 			}
-			if (ResDataPhoneFull.isSound(resId))
+			else if (ResDataPhoneFull.isSound(resId))
 			{
 				Application.sharedSoundMgr().getSound(resId);
-				return;
 			}
-			if (ResDataPhoneFull.isFont(resId))
+			else if (ResDataPhoneFull.isFont(resId))
 			{
 				Application.getFont(resId);
-				return;
 			}
-			try
+			else
 			{
-				Application.getTexture(resId);
-			}
-			catch (Exception)
-			{
+				try
+				{
+					Application.getTexture(resId);
+				}
+				catch (Exception)
+				{
+				}
 			}
 		}
 
 		public virtual void freeResource(int resId)
 		{
-			if (150 < resId)
+			if (resId > RESOURCES_COUNT)
 			{
 				return;
 			}
-			if (10 == resId)
+			if (resId == STR_MENU)
 			{
 				xmlStrings = null;
-				return;
 			}
-			if (ResDataPhoneFull.isSound(resId))
+			else if (ResDataPhoneFull.isSound(resId))
 			{
 				Application.sharedSoundMgr().freeSound(resId);
-				return;
 			}
-			NSObject value = null;
-			if (s_Resources.TryGetValue(resId, out value))
+			else
 			{
-				if (value != null)
+				NSObject value = null;
+				if (s_Resources.TryGetValue(resId, out value))
 				{
-					value.dealloc();
+					if (value != null)
+					{
+						value.dealloc();
+					}
+					s_Resources.Remove(resId);
 				}
-				s_Resources.Remove(resId);
 			}
 		}
 	}

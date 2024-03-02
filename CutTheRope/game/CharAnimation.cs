@@ -18,7 +18,7 @@ namespace CutTheRope.game
 
 		public override bool handleAction(ActionData a)
 		{
-			if (a.actionName == "ACTION_PLAY_TIMELINE")
+			if (a.actionName == ACTION_PLAY_TIMELINE)
 			{
 				if (a.actionParam == 1)
 				{

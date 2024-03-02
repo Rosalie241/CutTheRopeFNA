@@ -6,7 +6,7 @@ namespace CutTheRope
 	{
 		private static void Main(string[] args)
 		{
-			using (Game1 game = new Game1())
+			using (CutTheRopeGame game = new CutTheRopeGame())
 			{
                 game.Run();
 			}

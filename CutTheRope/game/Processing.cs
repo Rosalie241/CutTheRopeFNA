@@ -23,14 +23,14 @@ namespace CutTheRope.game
 				blendingMode = 0;
 				if (loading)
 				{
-					Image image = Image.Image_createWithResIDQuad(57, 0);
+					Image image = Image.Image_createWithResIDQuad(IMG_MENU_PROCESSING, 0);
 					Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
 					timeline.addKeyFrame(KeyFrame.makeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
 					timeline.addKeyFrame(KeyFrame.makeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));
 					timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
 					image.addTimeline(timeline);
 					image.playTimeline(0);
-					Text c = Text.createWithFontandString(3, Application.getString(655425));
+					Text c = Text.createWithFontandString(FNT_BIG_FONT, Application.getString(STR_MENU_PROCESSING));
 					HBox hBox = new HBox().initWithOffsetAlignHeight(10f, 16, image.height);
 					hBox.parentAnchor = (hBox.anchor = 18);
 					addChild(hBox);

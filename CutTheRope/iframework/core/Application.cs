@@ -4,6 +4,7 @@ using CutTheRope.iframework.media;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
+using static CutTheRope.iframework.core.ApplicationSettings;
 
 namespace CutTheRope.iframework.core
 {
@@ -17,7 +18,7 @@ namespace CutTheRope.iframework.core
 
 		private static ApplicationSettings appSettings;
 
-		private static GLCanvas _canvas = (GLCanvas)new GLCanvas().initWithFrame(default(Rectangle));
+		private static GLCanvas _canvas = (GLCanvas)new GLCanvas().init();
 
 		private static SoundMgr soundMgr;
 
@@ -77,7 +78,7 @@ namespace CutTheRope.iframework.core
 
 		public virtual GLCanvas createCanvas()
 		{
-			return (GLCanvas)new GLCanvas().initWithFrame(new Rectangle(0f, 0f, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT));
+			return (GLCanvas)new GLCanvas().init();
 		}
 
 		public virtual CTRResourceMgr createResourceMgr()
@@ -100,22 +101,19 @@ namespace CutTheRope.iframework.core
 			return (CTRRootController)new CTRRootController().initWithParent(null);
 		}
 
-		public virtual void applicationDidFinishLaunching(UIApplication application)
+		public virtual void applicationDidFinishLaunching()
 		{
 			appSettings = createAppSettings();
 			prefs = createPreferences();
-			if (appSettings.getBool(7))
+			string text = sharedPreferences().getStringForKey("PREFS_LOCALE");
+			if (text == null || text.Length == 0)
 			{
-				string text = sharedPreferences().getStringForKey("PREFS_LOCALE");
-				if (text == null || text.Length == 0)
-				{
-					text = ((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru") ? "ru" : ((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de") ? "de" : ((!(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")) ? "en" : "fr")));
-				}
-				appSettings.setString(8, NSObject.NSS(text));
+				text = ((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru") ? "ru" :
+						((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de") ? "de" :
+						((!(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")) ? "en" : "fr")));
 			}
+			appSettings.setString(AppSettings.APP_SETTING_LOCALE, NSObject.NSS(text));
 			updateOrientation();
-			FrameworkTypes.IS_IPAD = false;
-			FrameworkTypes.IS_RETINA = false;
 			root = createRootController();
 			soundMgr = createSoundMgr();
 			movieMgr = createMovieMgr();
